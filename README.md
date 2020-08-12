@@ -16,10 +16,12 @@ The bus dashboard displays groups of buses at stops. If you have a few stops clo
 
 ### App CRUD routes:
 
+- GET `/dashboard` -- this is the view where we add/delete/update groups. It should also have a search box.
+
 Groups:
 
 - POST `/groups`
-- GET `/groups`
+- GET `/groups` -- should allow `origin` and/or `destination` query params. If those params are sent, the endpoint should return all matching groups, ranked, not just the current user's matches. This would allow people to find groups that others had created and copy them to their own accounts. We should not identify the user that created the group.
 - GET `/groups/:id`
 - PUT `/groups/:id`
 - DELETE `/groups/:id`
@@ -68,6 +70,8 @@ Authentication:
 Group:
 
 - userId
+- origin
+- destination
 - default -- boolean, only one default per user, this should be validated, default is false
 
 Stop:
