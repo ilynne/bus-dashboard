@@ -10,13 +10,14 @@ The bus dashboard displays groups of buses at stops. If you have a few stops clo
 
 ### Authentication:
 
-- `/login`
-- `/logout`
-- `/reset`
+- POST `/login`
+- GET `/logout`
+- POST `/reset`
 
 ### App CRUD routes:
+- GET `/admin` -- this is the view where we add/delete/update groups. It should also have a search box. Only authorized users should have access.
 
-- GET `/dashboard` -- this is the view where we add/delete/update groups. It should also have a search box.
+- GET `/` -- this is the main dashboard. When the user is not logged in, it should display a log-in/signup form.
 
 Groups:
 
