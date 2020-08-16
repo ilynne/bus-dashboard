@@ -10,13 +10,12 @@ The bus dashboard displays groups of buses at stops. If you have a few stops clo
 
 ### Authentication:
 
+- `/signup`
 - `/login`
 - `/logout`
 - `/reset`
 
 ### App CRUD routes:
-
-- GET `/dashboard` -- this is the view where we add/delete/update groups. It should also have a search box.
 
 Groups:
 
