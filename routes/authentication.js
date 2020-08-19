@@ -1,5 +1,4 @@
 const { Router, query } = require("express");
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const router = Router();
 
