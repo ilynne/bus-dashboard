@@ -39,7 +39,8 @@ router.get("/",
                 res.sendStatus(404);
             }
         } else if (origin && destination) {
-            const groups = await groupDAO.getByOriginAndDestination(origin, destination);
+            const searchString = `${origin} ${destination}`;
+            const groups = await groupDAO.getByOriginAndDestination(searchString);
             if (groups) {
                 res.json(groups);
             } else {
@@ -63,12 +64,12 @@ router.get("/:id",
         const groupId = req.params.id;
         if (groupId) {
             const userId = req.user._id;
-            const storedUserId = await groupDAO.getAssociatedUserId(userId);
+            const storedUserId = await groupDAO.getAssociatedUserId(groupId);
             if (userId == storedUserId) {
                 const group = await groupDAO.getById(groupId);
                 res.json(group)
             } else {
-                res.sendStatus(404);
+                res.sendStatus(403);
             }
         } else {
             res.sendStatus(404);
@@ -82,7 +83,7 @@ router.put("/:id",
         const groupId = req.params.id;
         if (groupId) {
             const userId = req.user._id;
-            const storedUserId = await groupDAO.getAssociatedUserId(userId);
+            const storedUserId = await groupDAO.getAssociatedUserId(groupId);
             if (userId == storedUserId) {
                 const { origin, destination, isDefault } = req.body;
                 const updatedGroup = await groupDAO.updateById(groupId, origin, destination, isDefault)
@@ -92,7 +93,7 @@ router.put("/:id",
                     res.sendStatus(404);
                 }
             } else {
-                res.sendStatus(404);
+                res.sendStatus(403);
             }       
         } else {
             res.sendStatus(404);
@@ -106,12 +107,12 @@ router.delete("/:id",
         const groupId = req.params.id;
         if (groupId) {
             const userId = req.user._id;
-            const storedUserId = await groupDAO.getAssociatedUserId(userId);
+            const storedUserId = await groupDAO.getAssociatedUserId(groupId);
             if (userId == storedUserId) {
                 await groupDAO.deleteById(groupId);
                 res.sendStatus(200);
             } else {
-                res.sendStatus(404);
+                res.sendStatus(403);
             }            
         } else {
             res.sendStatus(404);
