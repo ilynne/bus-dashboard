@@ -94,7 +94,6 @@ module.exports.updateById = async (groupId, origin, destination, isDefault) => {
                 "isDefault": isDefault
                 }
             }
- 
         );
         return updatedGroup
     } catch (e) {
