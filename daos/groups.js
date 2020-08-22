@@ -88,9 +88,13 @@ module.exports.updateById = async (groupId, origin, destination, isDefault) => {
     try {
         const updatedGroup = await Group.update(
             { _id: groupId },
-            {  origin: origin },
-            { destination: destination},
-            { isDefault: isDefault}
+            { $set: {
+                "origin": origin,
+                "destination": destination,
+                "isDefault": isDefault
+                }
+            }
+ 
         );
         return updatedGroup
     } catch (e) {

@@ -24,14 +24,14 @@ router.get("/",
     // authentication middleware, 
     async (req, res, next) => {
         let { origin, destination } = req.query;
-        if (origin) {
+        if (origin && !destination) {
             const groups = await groupDAO.getByOrigin(origin);
             if (groups) {
                 res.json(groups);
             } else {
                 res.sendStatus(404);
             }
-        } else if (destination) {
+        } else if (destination && !origin) {
             const groups = await groupDAO.getByDestination(destination);
             if (groups) {
                 res.json(groups);
@@ -69,7 +69,7 @@ router.get("/:id",
                 const group = await groupDAO.getById(groupId);
                 res.json(group)
             } else {
-                res.sendStatus(403);
+                res.sendStatus(404);
             }
         } else {
             res.sendStatus(404);
@@ -93,7 +93,7 @@ router.put("/:id",
                     res.sendStatus(404);
                 }
             } else {
-                res.sendStatus(403);
+                res.sendStatus(404);
             }       
         } else {
             res.sendStatus(404);
@@ -112,7 +112,7 @@ router.delete("/:id",
                 await groupDAO.deleteById(groupId);
                 res.sendStatus(200);
             } else {
-                res.sendStatus(403);
+                res.sendStatus(404);
             }            
         } else {
             res.sendStatus(404);
