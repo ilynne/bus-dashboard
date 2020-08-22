@@ -1,62 +1,11 @@
 const { Router } = require("express");
 const router = Router();
 const bcrypt = require("bcrypt");
+const { isAuthorized, emailAndPassword } = require("./middleware.js")
 const userDAO = require('../daos/user');
 const tokenDAO = require('../daos/token')
 const Token = require('../models/token');
 const User = require('../models/user');
-
-const authenticate = async (req, res, next) => {
-  const { authorization } = req.headers
-  if (authorization) {
-    const token = authorization.split(' ')[1];
-    if (token) {
-      req.token = token;
-      const token = await Token.findOne({ uuid: uuid }).lean();
-      const user = await User.findOne({ _id: token.userId }).lean()
-      if (userId) {
-        req.user = user;
-        next();
-      } else {
-        res.sendStatus(401);
-      }
-    } else {
-      res.sendStatus(401);
-    }
-  } else {
-    res.sendStatus(401);
-  }
-}
-
-const isLoggedIn = async (req, res, next) => {
-  const { authorization } = req.headers
-  if (authorization) {
-    const token = authorization.split(' ')[1];
-    if (token) {
-      req.token = token;
-      const userId = await tokenDAO.getUserIdFromToken(token)
-      if (userId) {
-        req.userId = userId;
-        next();
-      } else {
-        res.sendStatus(401);
-      }
-    } else {
-      res.sendStatus(401);
-    }
-  } else {
-    res.sendStatus(401);
-  }
-}
-
-const emailAndPassword = async (req, res, next) => {
-  const { email, password } = req.body
-  if (!email || !password) {
-    res.status(400).send('email and password are required')
-  } else {
-    next();
-  }
-}
 
 // Login
 router.post("/", emailAndPassword, async (req, res, next) => {
@@ -91,10 +40,10 @@ router.post("/signup", emailAndPassword, async (req, res, next) => {
 })
 
 // Password
-router.post("/password", isLoggedIn, async (req, res, next) => {
+router.post("/password", isAuthorized, async (req, res, next) => {
   const { password } = req.body
   if (!password) {
-    res.status(400).send('email and password are required')
+    res.status(400).send('password is required')
   } else {
     try {
       const encryptedPassword = await bcrypt.hash(password, 10);
@@ -107,7 +56,7 @@ router.post("/password", isLoggedIn, async (req, res, next) => {
 })
 
 // Logout
-router.post("/logout", isLoggedIn, async (req, res, next) => {
+router.post("/logout", isAuthorized, async (req, res, next) => {
   const deletedToken = await tokenDAO.removeToken(req.token);
   if (deletedToken === true) {
     res.status(200).send('success');
