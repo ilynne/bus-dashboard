@@ -1,4 +1,5 @@
 const { Router, query } = require("express");
+const router = Router();
 
 // Authentication middleware
 
