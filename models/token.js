@@ -6,5 +6,4 @@ const tokenSchema = new mongoose.Schema({
 });
 
 tokenSchema.index({ uuid: 1 })
-tokenSchema.index({ userId: 1 })
 module.exports = mongoose.model("tokens", tokenSchema);
