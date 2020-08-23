@@ -1,17 +1,14 @@
 const { Router, query, response } = require("express");
 const router = Router();
+const { isAuthorized } = require("./middleware.js")
 
 const groupDAO = require('../daos/groups');
 
-// Authentication middleware
-
-// Routes
 router.post("/",
-    // authentication middleware, 
+    isAuthorized, 
     async (req, res, next) => {
-        const userId = req.user._id;
-        const { origin, destination, isDefault } = req.body;
-        const newGroup = await groupDAO.create(userId, origin, destination, isDefault);
+        const { name, origin, destination, isDefault } = req.body;
+        const newGroup = await groupDAO.create(req.userId, name, origin, destination, isDefault);
         if (newGroup) {
             res.json(newGroup);
         } else {
@@ -21,7 +18,7 @@ router.post("/",
 );
 
 router.get("/", 
-    // authentication middleware, 
+    isAuthorized, 
     async (req, res, next) => {
         let { origin, destination } = req.query;
         if (origin && !destination) {
@@ -47,8 +44,7 @@ router.get("/",
                 res.sendStatus(404);
             }
         } else {
-            const userId = req.user._id;
-            const groups = await groupDAO.getByUserId(userId);
+            const groups = await groupDAO.getByUserId(req.userId);
             if (groups) {
                 res.json(groups);
             } else {
@@ -59,13 +55,12 @@ router.get("/",
 );
 
 router.get("/:id",
-    // authentication middleware, 
+    isAuthorized,
     async (req, res, next) => {
         const groupId = req.params.id;
         if (groupId) {
-            const userId = req.user._id;
-            const storedUserId = await groupDAO.getAssociatedUserId(groupId);
-            if (userId == storedUserId) {
+            const storedUserId = await groupDAO.getUserIdFromGroupId(groupId);
+            if (req.userId == storedUserId) {
                 const group = await groupDAO.getById(groupId);
                 res.json(group)
             } else {
@@ -78,15 +73,14 @@ router.get("/:id",
 );
 
 router.put("/:id",
-    // authentication middleware, 
+    isAuthorized, 
     async (req, res, next) => {
         const groupId = req.params.id;
         if (groupId) {
-            const userId = req.user._id;
-            const storedUserId = await groupDAO.getAssociatedUserId(groupId);
-            if (userId == storedUserId) {
-                const { origin, destination, isDefault } = req.body;
-                const updatedGroup = await groupDAO.updateById(groupId, origin, destination, isDefault)
+            const storedUserId = await groupDAO.getUserIdFromGroupId(groupId);
+            if (req.userId == storedUserId) {
+                const {name, origin, destination, isDefault} = req.body;
+                const updatedGroup = await groupDAO.updateById(groupId, name, origin, destination, isDefault);
                 if (updatedGroup) {
                     res.json(updatedGroup);
                 } else {
@@ -102,15 +96,18 @@ router.put("/:id",
 );
 
 router.delete("/:id",
-    // authentication middleware, 
+    isAuthorized, 
     async (req, res, next) => {
         const groupId = req.params.id;
         if (groupId) {
-            const userId = req.user._id;
-            const storedUserId = await groupDAO.getAssociatedUserId(groupId);
-            if (userId == storedUserId) {
-                await groupDAO.deleteById(groupId);
-                res.sendStatus(200);
+            const storedUserId = await groupDAO.getUserIdFromGroupId(groupId);
+            if (req.userId == storedUserId) {
+                try {
+                    await groupDAO.deleteById(groupId);
+                    res.sendStatus(200);
+                } catch (e) {
+                    res.status(500).send(e.message);
+                }
             } else {
                 res.sendStatus(404);
             }            
