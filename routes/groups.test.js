@@ -180,7 +180,6 @@ describe("/groups", () => {
                 .send();
               expect(res.statusCode).toEqual(200);
               expect(res.body).toMatchObject([
-                // this part has issues
                 user0Groups[1],
                 user1Groups[1]
               ]);
@@ -194,7 +193,6 @@ describe("/groups", () => {
                 .send();
               expect(res.statusCode).toEqual(200);
               expect(res.body).toMatchObject([
-                // this part has issues
                 user0Groups[1],
                 user1Groups[1],
                 user0Groups[0],
