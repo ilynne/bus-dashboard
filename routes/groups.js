@@ -1,4 +1,4 @@
-const { Router, query, response } = require("express");
+const { Router, query } = require("express");
 const router = Router();
 const { isAuthorized } = require("./middleware.js")
 
