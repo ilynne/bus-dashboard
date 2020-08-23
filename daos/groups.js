@@ -4,15 +4,16 @@ const Group = require('../models/group');
 
 module.exports = {};
 
-module.exports.create = async(userId, origin, destination, isDefault) => {
+module.exports.create = async(userId, name, origin, destination, isDefault) => {
     try {
         const newGroup = await Group.create({
             userId: userId,
+            name: name,
             origin: origin,
             destination: destination,
             isDefault: isDefault
         });
-        return newGroup
+        return newGroup;
     } catch (e) {
         throw e;
     }
@@ -30,7 +31,7 @@ module.exports.getByOrigin = async (origin) => {
     }
 };
 
-module.exports.getByDestination = async () => {
+module.exports.getByDestination = async (destination) => {
     try {
         const destinationResults = await Group.find(
             { $text: { $search: destination } },
@@ -57,19 +58,16 @@ module.exports.getByOriginAndDestination = async (searchString) => {
 module.exports.getByUserId = async (userId) => {
     try {
         const groups = await Group.find({ userId: userId}).lean();
-        return groups
+        return groups;
     } catch (e) {
         throw e;
     }
 };
 
-module.exports.getAssociatedUserId = async (groupId) => {
-    const validId = await mongoose.Types.ObjectId.isValid(groupId);
+module.exports.getUserIdFromGroupId = async (groupId) => {
     try {
-        if (validId) {
-            const group = await Group.findOne({ _id: groupId });
-            return group.userId
-        }
+        const group = await Group.findOne({ _id: groupId });
+        return group.userId;
     } catch (e) {
         throw e;
     }
@@ -78,33 +76,27 @@ module.exports.getAssociatedUserId = async (groupId) => {
 module.exports.getById = async (groupId) => {
     try {
         const group = await Group.findOne({ _id: groupId }).lean();
-        return group
+        return group;
     } catch (e) {
         throw e;
     }
 };
 
-module.exports.updateById = async (groupId, origin, destination, isDefault) => {
+module.exports.updateById = async (groupId, name, origin, destination, isDefault) => {
+    let updateObj = {};
+    if (name) { updateObj.name = name};
+    if (origin) { updateObj.origin = origin};
+    if (destination) { updateObj.destination = destination};
+    if (isDefault) { updateObj.isDefault = isDefault}
+
     try {
-        const updatedGroup = await Group.update(
-            { _id: groupId },
-            { $set: {
-                "origin": origin,
-                "destination": destination,
-                "isDefault": isDefault
-                }
-            }
-        );
-        return updatedGroup
+        const updatedGroup = await Group.update({ _id: groupId }, updateObj);
+        return updatedGroup;
     } catch (e) {
         throw e;
     }
 };
 
 module.exports.deleteById = async (groupId) => {
-    try{
-        await Group.remove({ _id: groupId })
-    } catch (e) {
-        throw e;
-    }
+    await Group.remove({ _id: groupId });
 }
