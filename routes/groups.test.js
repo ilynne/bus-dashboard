@@ -13,9 +13,9 @@ describe("/groups", () => {
     afterEach(testUtils.clearDB);
 
     const group0 = { name: "group0", origin: "Seattle", destination: "Portland" };
-    const group1 = { name: "group1", origin: "New York", destination: "Boston", isDefault: true };
+    const group1 = { name: "group1", origin: "New York", destination: "Boston" };
     const group2 = { name: "group2", origin: "Portland", destination: "Seattle" };
-    const group3 = { name: "group3", origin: "Boston", destination: "New York", isDefault: true };
+    const group3 = { name: "group3", origin: "Boston", destination: "New York" };
 
     describe('Before login', () => {
       describe('POST /', () => {
@@ -275,8 +275,7 @@ describe("/groups", () => {
               expect(storedGroup).toMatchObject({
                 name: "newName0",
                 origin: "Seattle",
-                destination: "Portland",
-                isDefault: false
+                destination: "Portland"
               })
             });
             it.each([0, 1])('should not update user0 group #%# from user1', async (index) => {
@@ -301,8 +300,7 @@ describe("/groups", () => {
               expect(storedGroup).toMatchObject({
                 name: "newName1",
                 origin: "Portland",
-                destination: "newDestination",
-                isDefault: false
+                destination: "newDestination"
               })
             });
             it.each([0, 1])('should not update user1 group #%# from user0', async (index) => {
@@ -334,6 +332,11 @@ describe("/groups", () => {
                 .set('Authorization', 'Bearer ' + token0)
                 .send();
               expect(res.statusCode).toEqual(200);
+              const storedGroupResponse = await request(server)
+                .get("/groups/" + group._id)
+                .set('Authorization', 'Bearer ' + token0)
+                .send();
+              expect(storedGroupResponse.status).toEqual(404);
             });
             it.each([0, 1])('should not allow user0 to delete group from user1', async (index) => {
               const group = user1Groups[index];
@@ -355,6 +358,11 @@ describe("/groups", () => {
                 .set('Authorization', 'Bearer ' + token1)
                 .send();
               expect(res.statusCode).toEqual(200);
+              const storedGroupResponse = await request(server)
+                .get("/groups/" + group._id)
+                .set('Authorization', 'Bearer ' + token1)
+                .send();
+              expect(storedGroupResponse.status).toEqual(404);
             });
             it.each([0, 1])('should not allow user1 to delete group from user0', async (index) => {
               const group = user0Groups[index];

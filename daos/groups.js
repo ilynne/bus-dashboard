@@ -73,21 +73,20 @@ module.exports.getUserIdFromGroupId = async (groupId) => {
     }
 };
 
-module.exports.getById = async (groupId) => {
+module.exports.getByIdAndUserId = async (groupId, userId) => {
     try {
-        const group = await Group.findOne({ _id: groupId }).lean();
+        const group = await Group.findOne({ _id: groupId, userId: userId }).lean();
         return group;
     } catch (e) {
         throw e;
     }
 };
 
-module.exports.updateById = async (groupId, name, origin, destination, isDefault) => {
+module.exports.updateById = async (groupId, name, origin, destination) => {
     let updateObj = {};
     if (name) { updateObj.name = name};
     if (origin) { updateObj.origin = origin};
     if (destination) { updateObj.destination = destination};
-    if (isDefault) { updateObj.isDefault = isDefault}
 
     try {
         const updatedGroup = await Group.update({ _id: groupId }, updateObj);
@@ -98,5 +97,10 @@ module.exports.updateById = async (groupId, name, origin, destination, isDefault
 };
 
 module.exports.deleteById = async (groupId) => {
-    await Group.remove({ _id: groupId });
+    if (!mongoose.Types.ObjectId.isValid(groupId)) {
+        return false;
+      } else {
+        await Group.deleteOne({ _id: groupId });
+        return true;
+      }
 }

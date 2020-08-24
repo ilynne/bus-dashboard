@@ -4,8 +4,7 @@ const groupSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
     name: { type: String, required: true },
     origin: { type: String },
-    destination: { type: String },
-    isDefault: { type: Boolean, default: false }
+    destination: { type: String }
 });
 
 groupSchema.index({ name: 'text', origin: 'text', destination: 'text' });

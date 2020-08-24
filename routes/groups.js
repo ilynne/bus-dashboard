@@ -59,9 +59,8 @@ router.get("/:id",
     async (req, res, next) => {
         const groupId = req.params.id;
         if (groupId) {
-            const storedUserId = await groupDAO.getUserIdFromGroupId(groupId);
-            if (req.userId == storedUserId) {
-                const group = await groupDAO.getById(groupId);
+            const group = await groupDAO.getByIdAndUserId(groupId, req.userId);
+            if (group) {
                 res.json(group)
             } else {
                 res.sendStatus(404);
@@ -103,11 +102,11 @@ router.delete("/:id",
             const storedUserId = await groupDAO.getUserIdFromGroupId(groupId);
             if (req.userId == storedUserId) {
                 try {
-                    await groupDAO.deleteById(groupId);
-                    res.sendStatus(200);
-                } catch (e) {
+                    const success = await groupDAO.deleteById(groupId);
+                    res.sendStatus(success ? 200 : 400);
+                  } catch(e) {
                     res.status(500).send(e.message);
-                }
+                  }
             } else {
                 res.sendStatus(404);
             }            
