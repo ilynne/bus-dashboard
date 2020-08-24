@@ -11,7 +11,6 @@ module.exports.create = async(userId, name, origin, destination, isDefault) => {
             name: name,
             origin: origin,
             destination: destination,
-            isDefault: isDefault
         });
         return newGroup;
     } catch (e) {
