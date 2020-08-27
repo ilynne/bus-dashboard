@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const models = [
-  require('./models/authentication'),
   require('./models/bus'),
   require('./models/group'),
   require('./models/stop'),

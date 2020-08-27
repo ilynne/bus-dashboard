@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const tokenDAO = require('../daos/token');
 
 const isAuthorized = async (req, res, next) => {
@@ -29,5 +31,16 @@ const emailAndPassword = async (req, res, next) => {
     next();
   }
 }
+
+const isValidId = async (req, res, next) => {
+  const id = req.params.id;
+  if (!mongoose.Types.ObjectId.isValid(id)){
+    res.status(400).send('Must pass in valid Id')
+  } else {
+    next();
+  }
+}
+
 exports.isAuthorized = isAuthorized;
 exports.emailAndPassword = emailAndPassword;
+exports.isValidId = isValidId;
