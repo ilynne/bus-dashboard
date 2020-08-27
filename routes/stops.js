@@ -8,11 +8,11 @@ router.post("/",
     isAuthorized,
     async (req, res, next) => {
         const { groupId, stopId } = req.body;
-        const newStop = await stopDAO.create(groupId, stopId);
-        if (newStop) {
+        try {
+            const newStop = await stopDAO.create(groupId, stopId);
             res.json(newStop);
-        } else {
-            res.sendStatus(404);
+        } catch(e) {
+            next(e);
         }
     }
 );
@@ -81,5 +81,14 @@ router.delete("/:id",
         }
     }
 );
+
+// errors
+router.use(async (error, req, res, next) => {
+    if (error instanceof stopDAO.BadDataError) {
+      res.status(409).send(error.message);
+    } else {
+      res.status(500).send('something went wrong');
+    }
+});
 
 module.exports = router;

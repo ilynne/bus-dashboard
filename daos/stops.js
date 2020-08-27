@@ -12,6 +12,9 @@ module.exports.create = async(groupId, stopId) => {
         });
         return newStop;
     } catch (e) {
+        if (e.message.includes('duplicate key')) {
+            throw new BadDataError(e.message);
+        }
         throw e;
     }
 };
@@ -64,3 +67,6 @@ module.exports.deleteById = async (stopId) => {
         return false;
     }
 }
+
+class BadDataError extends Error {};
+module.exports.BadDataError = BadDataError;
