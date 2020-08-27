@@ -96,10 +96,10 @@ module.exports.updateById = async (groupId, name, origin, destination) => {
 };
 
 module.exports.deleteById = async (groupId) => {
-    if (!mongoose.Types.ObjectId.isValid(groupId)) {
-        return false;
-      } else {
+    try {
         await Group.deleteOne({ _id: groupId });
         return true;
-      }
+    } catch {
+        return false;
+    }  
 }
