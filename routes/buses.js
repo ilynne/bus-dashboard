@@ -21,7 +21,8 @@ router.get("/",
     isAuthorized,    
     async (req, res, next) => {
         let { stopId, groupId } = req.query;
-        if(stopId) {
+        if(stopId && !groupId) {
+            // this stopId refers to a mongoDB ObjectID
             const buses = await busDAO.getByStopId(stopId);
             if (buses) {
                 res.json(buses);
@@ -29,6 +30,7 @@ router.get("/",
                 res.sendStatus(404);
             }
         } else if (stopId && groupId) {
+            // this stopId refers to a OBA stopId
             const buses = await busDAO.getByStopAndGroup(stopId, groupId);
             if (buses) {
                 res.json(buses);

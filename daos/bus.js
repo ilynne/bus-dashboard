@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
 const Bus = require('../models/bus');
+const Group = require('../models/group');
+const stop = require('../models/stop');
 
 module.exports = {};
 
@@ -30,8 +32,25 @@ module.exports.getByStopId = async (stopId) => {
 
 module.exports.getByStopAndGroup = async (stopId, groupId) => {
     try {
-        const buses = await Bus.aggregate([
-            // to finish
+        // this will need some fine tuning
+        const buses = await Group.aggregate([
+            { $match: { _id: mongoose.Types.ObjectId(groupId) } },
+            { $lookup: {
+                from: "stops",
+                localField: "_id",
+                foreignField: "groupId",
+                as: "stops"
+            }},
+            { $project: { __v: 0, _id: 0, destination: 0, name: 0, origin: 0, userId: 0}},
+            { $match: { "stops.stopId": stopId}},
+            { $lookup: {
+                from: "buses",
+                localField: "stops._id",
+                foreignField: "stopId",
+                as: "buses"
+            }},
+            { $project: {buses: 1}},
+            { $unwind: "$buses"},
         ]);
         return buses;
     } catch (e) {

@@ -178,7 +178,7 @@ describe("/buses", () => {
                 user0Bus = (await request(server).post("/buses").set('Authorization', 'Bearer ' + token0).send(bus0)).body;
                 user1Bus = (await request(server).post("/buses").set('Authorization', 'Bearer ' + token1).send(bus1)).body;
             });
-            it('should get a stop via the stopId query', async () => {
+            it('should get a bus via the stopId query', async () => {
                 const searchTerm = user0Stop._id;
                 const res = await request(server)
                 .get("/buses?stopId=" + encodeURI(searchTerm))
@@ -187,9 +187,17 @@ describe("/buses", () => {
                 expect(res.statusCode).toEqual(200);
                 expect(res.body).toEqual([user0Bus]);
             });
-        //     it('should get buses based on stopId and groupId query', async () => {
-        //         // to finish
-        //     })
+            // this will need fine tuning:
+            it('should get buses based on stopId and groupId query', async () => {
+              const stopIdParam = "3rdAveAndPike";
+              const groupIdParam = user0Group._id;
+              const res = await request(server)
+                .get("/buses?stopId=" + encodeURI(stopIdParam) + "&groupId=" + encodeURI(groupIdParam))
+                .set('Authorization', 'Bearer ' + token0)
+                .send();
+              expect(res.statusCode).toEqual(200);
+              // expect(res.body).toEqual([user0Bus]);
+            })
             it('should get all buses in order of creation', async () => {
                 const res = await request(server)
                 .get("/buses")
