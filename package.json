@@ -1,0 +1,36 @@
+{
+  "name": "bus-dashboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon -e js,json,mustache index.js",
+    "test": "jest --coverage --runInBand",
+    "tdd": "jest --watch --runInBand"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.21",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@shelf/jest-mongodb": "^1.1.5",
+    "cheerio": "^1.0.0-rc.3",
+    "jest": "^26.1.0",
+    "nodemon": "^2.0.4",
+    "supertest": "^4.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilynne/bus-dashboard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ilynne/bus-dashboard/issues"
+  },
+  "homepage": "https://github.com/ilynne/bus-dashboard#readme"
+}
