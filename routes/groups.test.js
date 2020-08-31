@@ -188,7 +188,7 @@ describe("/groups", () => {
               const searchTerm0 = 'Boston';
               const searchTerm1 = 'Seattle';
               const res = await request(server)
-                .get("/groups?origin=" + encodeURI(searchTerm0) + "?destination=" + encodeURI(searchTerm1))
+                .get("/groups?origin=" + encodeURI(searchTerm0) + "&destination=" + encodeURI(searchTerm1))
                 .set('Authorization', 'Bearer ' + token0)
                 .send();
               expect(res.statusCode).toEqual(200);
