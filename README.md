@@ -10,7 +10,55 @@ The bus dashboard displays groups of buses at stops. If you have a few stops clo
 
 The application is currently deployed to https://whispering-caverns-88263.herokuapp.com. There is no front end at this time, but most of the routes work. You can test them using Postman.
 
+## Test this API
+
+### Create an account
+
+`POST` to https://whispering-caverns-88263.herokuapp.com/login/signup. Send:
+```
+{
+  "email":<email>,
+  "password":<password>
+}
+```
+
+You will receive a `User` object.
+
+### Get a token
+
+`POST` to https://whispering-caverns-88263.herokuapp.com/login/signup. Send:
+```
+{
+  "email":<email>,
+  "password":<password>
+}
+```
+
+You will receive a token. Use it to set a `Bearer Token` for the following.
+
+### Create a Group
+
+`POST` to https://whispering-caverns-88263.herokuapp.com/groups. Send:
+```
+{
+  "userId":<userId>,
+  "name":"My Group Name",
+  "origin":"My Origin",
+  "destination":"My Destination"
+}
+```
+
+You will receive a `Group` object.
+
+Other routes work as expected; see schema and routes below.
+
 Completed items are checked below.
+
+### One Bus Away Routes
+
+`GET` https://whispering-caverns-88263.herokuapp.com/oba/routes/1. You will get data for all the routes for King County Metro.
+`GET` https://whispering-caverns-88263.herokuapp.com/oba/routes/1_100252/stops. You will get stops for the route id. The sample is the 62.
+`GET` https://whispering-caverns-88263.herokuapp.com/oba/stops/1_420/arrivals. You will get stops for the route id. The sample is the SE 3rd and Virginia.
 
 ### Authentication:
 
