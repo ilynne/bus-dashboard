@@ -6,6 +6,10 @@ The current app uses Firebase for authentication and app data. It uses a Rails A
 
 The bus dashboard displays groups of buses at stops. If you have a few stops close by that give you different options for routes, there is no central location to check them all. The Bus Dashboard fills that need.
 
+## Sample Application
+
+The application is currently deployed to https://whispering-caverns-88263.herokuapp.com. There is no front end at this time, but most of the routes work. You can test them using Postman.
+
 ## Planned routes
 
 ### Authentication:
