@@ -26,7 +26,7 @@ You will receive a `User` object.
 
 ### Get a token
 
-`POST` to https://whispering-caverns-88263.herokuapp.com/login/signup. Send:
+`POST` to https://whispering-caverns-88263.herokuapp.com/login. Send:
 ```
 {
   "email":<email>,
