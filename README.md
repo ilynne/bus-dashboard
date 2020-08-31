@@ -17,7 +17,7 @@ Completed items are checked below.
 - [x] `/signup`
 - [x] `/login`
 - [x] `/logout`
-- [] `/reset` -- This route will probably be added at a later date. It requires sending an email.
+- [ ] `/reset` -- This route will probably be added at a later date. It requires sending an email.
 
 ### App CRUD routes:
 
@@ -55,7 +55,7 @@ This data must be pulled from the OneBusAway API using an API key. It should not
 
 ### Migration:
 
-- [] The current app does not have a default option for the group. It also uses one table for buses at stops. We will need to migrate these. We also need to migrate existing users, who will need to reset their passwords.
+- [ ] The current app does not have a default option for the group. It also uses one table for buses at stops. We will need to migrate these. We also need to migrate existing users, who will need to reset their passwords.
 
 ### Models
 
@@ -75,7 +75,7 @@ Group:
 - [x] userId
 - [x] origin
 - [x] destination
-- [] ~default -- boolean, only one default per user, this should be validated, default is false~ -- this attribute was deemed unnecessary
+- [ ] ~default -- boolean, only one default per user, this should be validated, default is false~ -- this attribute was deemed unnecessary
 
 Stop:
 
