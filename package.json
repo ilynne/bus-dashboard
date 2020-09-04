@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "postinstall": "[ \"$NODE_ENV\" == production ] && cd client && npm run build && cd -",
+    "postinstall": "\"$NODE_ENV\" == production && cd client && npm run build && cd -",
     "test": "jest --coverage --runInBand",
     "tdd": "jest --watch --runInBand"
   },
