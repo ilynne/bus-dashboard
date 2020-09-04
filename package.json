@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "postinstall": "if [ -n \"$npm_config_production\" ]; then  cd client && npm run build && cd - fi",
+    "postinstall": "if [ -n \"$npm_config_production\" ]; then cd client && npm run build && cd -; fi",
     "test": "jest --coverage --runInBand",
     "tdd": "jest --watch --runInBand"
   },
