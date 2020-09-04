@@ -69,7 +69,7 @@ router.post("/logout", isAuthorized, async (req, res, next) => {
 // errors
 router.use(async (error, req, res, next) => {
   if (error instanceof userDAO.BadDataError) {
-    res.status(409).send(error.message);
+    res.status(409).send(JSON.stringify(error.message));
   } else {
     res.status(500).send('something went wrong');
   }
