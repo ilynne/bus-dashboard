@@ -5,7 +5,12 @@ module.exports = {};
 module.exports.createUser = async (userObj) => {
   try {
     const user = await User.create(userObj);
-    return user;
+    const userNoPW = {
+      _id: user._id,
+      email: user.email,
+      __v: user.__v
+    };
+    return userNoPW;
   } catch(e) {
     if (e.message.includes('validation failed')) {
       throw new BadDataError(e.message);

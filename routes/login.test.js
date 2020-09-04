@@ -76,6 +76,11 @@ describe("/login", () => {
           expect(Object.values(user).includes(user0.password)).toBe(false);
         });
       });
+      it("should not return password hash", async () => {
+        let res = await request(server).post("/login/signup").send(user0);
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).not.toContain("password:");
+      });
     });
   });
   describe.each([user0, user1])("User %# after signup", (user) => {
