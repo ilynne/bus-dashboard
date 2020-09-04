@@ -20,7 +20,7 @@ router.post("/", emailAndPassword, async (req, res, next) => {
         next(e);
       }
     } else {
-      res.status(401).send('invalid login')
+      res.status(401).send(JSON.stringify('invalid login'));
     }
   } catch(e) {
     next(e)
@@ -71,7 +71,7 @@ router.use(async (error, req, res, next) => {
   if (error instanceof userDAO.BadDataError) {
     res.status(409).send(JSON.stringify(error.message));
   } else {
-    res.status(500).send('something went wrong');
+    res.status(500).send(JSON.stringify('something went wrong'));
   }
 });
 
