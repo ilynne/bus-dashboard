@@ -2,19 +2,28 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default class Signup extends React.Component {
-  handleFormSubmit = (e) => {
-    e.preventDefault();
-    console.log(e)
-    this.signupUser('ilynne@gmail.com', 'password')
+  state = {
+    email: '',
+    password: ''
   }
 
-  signupUser = async (email, password) => {
-    const data = { email: email, password: password };
-    console.log(data, JSON.stringify(data))
-    await fetch('/login/signup/', {
+  handleInputChange = (e) => {
+    e.preventDefault();
+    this.setState({
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  handleFormSubmit = (e) => {
+    e.preventDefault();
+    this.signupUser();
+  }
+
+  signupUser = () => {
+    fetch('/login/signup', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data)
+      body: JSON.stringify(this.state)
     })
     .then(res => res.json())
     .then((response) => console.log(response))
@@ -33,13 +42,15 @@ export default class Signup extends React.Component {
           id={'email'}
           name={'email'}
           required={true}
+          onChange={this.handleInputChange}
         >
         </input>
         <input
-          type={'text'}
+          type={'password'}
           id={'password'}
           name={'password'}
           required={true}
+          onChange={this.handleInputChange}
         >
         </input>
         <input
