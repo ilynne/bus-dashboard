@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "build": "cd client && npm run build && cd -",
+    "postinstall": "cd client && npm run build && cd -",
     "test": "jest --coverage --runInBand",
     "tdd": "jest --watch --runInBand"
   },
