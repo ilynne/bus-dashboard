@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class SignIn extends React.Component {
+export default class Login extends React.Component {
   state = {
     email: '',
     password: ''
@@ -16,24 +16,29 @@ export default class SignIn extends React.Component {
 
   handleFormSubmit = (e) => {
     e.preventDefault();
-    this.signInUser();
+    this.loginUser();
   }
 
-  signInUser = () => {
+  loginUser = () => {
     fetch('/login', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(this.state)
     })
     .then(res => res.json())
-    .then((response) => console.log(response))
+    .then((response) => this.setToken(response))
     .catch((error) => { console.log("error", error)})
+  }
+
+  setToken = (response) => {
+    const { token } = response;
+    localStorage.setItem('busDashboard::token', token);
   }
 
   render() {
     return (
       <form
-        className={'sign-in-form'}
+        className={'login-form'}
         onSubmit={this.handleFormSubmit}
         method={'post'}
       >
@@ -55,7 +60,7 @@ export default class SignIn extends React.Component {
         </input>
         <input
             type={'submit'}
-            value={'Sign In'}
+            value={'Login'}
           >
           </input>
       </form>
@@ -63,6 +68,6 @@ export default class SignIn extends React.Component {
   }
 }
 
-SignIn.propTypes = {
+Login.propTypes = {
 
 }

@@ -33,7 +33,7 @@ export default class Signup extends React.Component {
   render() {
     return (
       <form
-        className={'sign-in-form'}
+        className={'sign-up-form'}
         onSubmit={this.handleFormSubmit}
         method={'post'}
       >

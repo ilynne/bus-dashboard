@@ -2,13 +2,17 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Signup from './Signup';
-import SignIn from './SignIn';
+import Login from './Login';
+import Logout from './Logout';
 
 function App() {
   return (
     <div>
       <Signup></Signup>
-      <SignIn></SignIn>
+      <hr />
+      <Login></Login>
+      <hr />
+      <Logout></Logout>
     </div>
   );
 }
