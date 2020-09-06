@@ -9,17 +9,19 @@ export default class Logout extends React.Component {
 
   render() {
     return (
-      <form
-        className={'logout-form'}
-        onSubmit={this.handleFormSubmit}
-        method={'post'}
-      >
-        <input
-            type={'submit'}
-            value={'Logout'}
-          >
-          </input>
-      </form>
+      <div className='display-user'>
+        <form
+          className={'logout-form'}
+          onSubmit={this.handleFormSubmit}
+          method={'post'}
+        >
+          <input
+              type={'submit'}
+              value={'Logout'}
+            >
+            </input>
+        </form>
+      </div>
     )
   }
 }

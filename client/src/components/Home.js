@@ -4,6 +4,7 @@ import Signup from './Signup';
 import Login from './Login';
 import Logout from './Logout';
 import LoginSignup from './LoginSignup';
+import Header from './Header';
 
 export default class Home extends React.Component {
   state = {
@@ -64,18 +65,20 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
-        <LoginSignup
-          isSignedIn={this.state.isSignedIn}
-          loginUser={this.loginUser}
-        >
-        </LoginSignup>
-
-        <hr />
-        <Logout
+        <Header
           isSignedIn={this.state.isSignedIn}
           logoutUser={this.logoutUser}
         >
-        </Logout>
+        </Header>
+
+        { this.state.isSignedIn
+          ? <p>stuff here</p>
+          : <LoginSignup
+              isSignedIn={this.state.isSignedIn}
+              loginUser={this.loginUser}
+            >
+            </LoginSignup>
+        }
       </div>
     )
   }
