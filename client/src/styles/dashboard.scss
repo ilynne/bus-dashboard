@@ -1,0 +1,218 @@
+.header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "title banner display-user";
+  background-color: black;
+  color: white;
+  font-size: 1.1em;
+  >div {
+    display: inline;
+  }
+}
+
+.title, .banner {
+  padding: 0.25em;
+  font-size: 1.1em;
+}
+
+.title {
+  grid-area: title;
+}
+
+.banner {
+  text-align: center;
+  grid-area: banner;
+  font-weight: bold;
+}
+
+.display-user {
+  grid-area: display-user;
+  text-align: right;
+  >span, img {
+    padding: 0.25em;
+  }
+  >img {
+    max-width: 24px;
+    vertical-align: middle;
+  }
+  >.user-name {
+    font-weight: bold;
+  }
+}
+
+.navigation {
+  background-color: lightgrey;
+  >div {
+    display: inline;
+  }
+}
+
+.tabs {
+  >div {
+    display: inline-block;
+    cursor: pointer;
+    padding: 0.25em;
+    text-transform: uppercase;
+    margin-right: 0.5em;
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+  >.selected {
+    // background-color: lightpink;
+    // border: 1px solid yellow;
+    background-color: #e7e7e7;
+  }
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.delete-link {
+  font-size: smaller;
+}
+
+.selected {
+  font-weight: bold;
+}
+
+div.arrivals {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.arrival-card {
+  min-width: 300px;
+  border: solid 1px lightgray;
+  margin: 6px 3px 0 3px;
+  >h2, p {
+    margin: 0;
+    font-size: 1em;
+    padding: 6px;
+  }
+  >p {
+    padding-top: 0;
+  }
+}
+
+table.arrivals {
+  color: navy;
+  width: 100%;
+  >tbody {
+    >tr {
+      >td {
+        padding: 3px 6px;
+      }
+      &:nth-child(odd) {
+        background-color: #f1f1f1;
+      }
+    }
+  }
+}
+
+.admin {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-areas:
+    "form group-preview";
+}
+
+.add-bus-form {
+  grid-area: form;
+  margin: 6px 3px 0 3px;
+  >div ul {
+    margin: 0;
+  }
+  >div p {
+    margin-bottom: 0;
+    font-weight: bold
+  }
+}
+
+.group-preview {
+  grid-area: group-preview;
+}
+
+.group-preview-card {
+  width: 300px;
+  border: solid 1px lightgray;
+  margin: 6px 3px 0 3px;
+  >h2, p {
+    margin: 0;
+    font-size: 1em;
+    padding: 6px;
+  }
+  >p {
+    padding-top: 0;
+  }
+}
+
+tr.warning {
+  color: red;
+}
+
+tr.soon {
+  color: darkgreen;
+  font-size: x-large;
+  font-weight: bold;
+}
+
+tr.scheduled {
+  color: black;
+}
+
+tr.past {
+  color: dimgray;
+  font-size: smaller
+}
+
+td.time-column {
+  text-align: right;;
+}
+
+@media screen and (max-width: 767px) {
+  .header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "title display-user"
+      "banner banner";
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .banner {
+    border-top: 1px solid darkgray;
+    padding-bottom: 6px;
+  }
+
+  div.arrivals {
+    display: block;
+  }
+
+  .arrival-card {
+    border-left: none;
+    border-right: none;
+    margin: 6px 0 0 0;
+  }
+
+  .admin {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "form"
+      "group-preview";
+  }
+
+  .group-preview-card {
+    width: 100%;
+    border-left: none;
+    border-right: none;
+    margin: 6px 0;
+  }
+}

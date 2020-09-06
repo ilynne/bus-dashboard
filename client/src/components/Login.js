@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class Signup extends React.Component {
+export default class Login extends React.Component {
   state = {
     email: '',
     password: ''
@@ -15,25 +15,15 @@ export default class Signup extends React.Component {
   }
 
   handleFormSubmit = (e) => {
+    console.log('login')
     e.preventDefault();
-    this.signupUser();
-  }
-
-  signupUser = () => {
-    fetch('/login/signup', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(this.state)
-    })
-    .then(res => res.json())
-    .then((response) => console.log(response))
-    .catch((error) => { console.log("error", error)})
+    this.props.loginUser(this.state);
   }
 
   render() {
     return (
       <form
-        className={'sign-in-form'}
+        className={'login-form'}
         onSubmit={this.handleFormSubmit}
         method={'post'}
       >
@@ -55,7 +45,7 @@ export default class Signup extends React.Component {
         </input>
         <input
             type={'submit'}
-            value={'Signup'}
+            value={'Login'}
           >
           </input>
       </form>
@@ -63,6 +53,7 @@ export default class Signup extends React.Component {
   }
 }
 
-Signup.propTypes = {
-
+Login.propTypes = {
+  isSignedIn: PropTypes.bool.isRequired,
+  loginUser: PropTypes.func.isRequired
 }
