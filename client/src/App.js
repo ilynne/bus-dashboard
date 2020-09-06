@@ -1,14 +1,13 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Signup from './Signup';
-import SignIn from './SignIn';
+import Home from './components/Home';
+
+import './styles/App.css';
+import './styles/dashboard.scss';
 
 function App() {
   return (
-    <div>
-      <Signup></Signup>
-      <SignIn></SignIn>
+    <div className="App">
+      <Home></Home>
     </div>
   );
 }

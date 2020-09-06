@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const tokenDAO = require('../daos/token');
 
 const isAuthorized = async (req, res, next) => {
+  console.log('isAuthorized')
   const { authorization } = req.headers
   if (authorization) {
     const token = authorization.split(' ')[1];
@@ -13,13 +14,16 @@ const isAuthorized = async (req, res, next) => {
         req.userId = userId;
         next();
       } else {
-        res.sendStatus(401);
+        console.log('no user')
+        res.status(401).send(JSON.stringify({ error: 'user not found' }));
       }
     } else {
-      res.sendStatus(401);
+      console.log('invalid token')
+      res.status(401).send(JSON.stringify({ error: 'invalid token' }));
     }
   } else {
-    res.sendStatus(401);
+    console.log('no header')
+    res.status(401).send(JSON.stringify({ error: 'no header' }));
   }
 }
 
