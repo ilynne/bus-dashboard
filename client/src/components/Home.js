@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Signup from './Signup';
 import Login from './Login';
 import Logout from './Logout';
+import LoginSignup from './LoginSignup';
 
 export default class Home extends React.Component {
   state = {
@@ -63,14 +64,11 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
-        <Signup></Signup>
-
-        <hr />
-        <Login
+        <LoginSignup
           isSignedIn={this.state.isSignedIn}
-          loginUser={this.loginUser}
+          logoutUser={this.logoutUser}
         >
-        </Login>
+        </LoginSignup>
 
         <hr />
         <Logout
