@@ -15,24 +15,9 @@ export default class Login extends React.Component {
   }
 
   handleFormSubmit = (e) => {
+    console.log('login')
     e.preventDefault();
-    this.loginUser();
-  }
-
-  loginUser = () => {
-    fetch('/login', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(this.state)
-    })
-    .then(res => res.json())
-    .then((response) => this.setToken(response))
-    .catch((error) => { console.log("error", error)})
-  }
-
-  setToken = (response) => {
-    const { token } = response;
-    localStorage.setItem('busDashboard::token', token);
+    this.props.loginUser(this.state);
   }
 
   render() {
@@ -69,5 +54,6 @@ export default class Login extends React.Component {
 }
 
 Login.propTypes = {
-
+  isSignedIn: PropTypes.bool.isRequired,
+  loginUser: PropTypes.func.isRequired
 }

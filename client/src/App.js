@@ -1,18 +1,13 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Signup from './Signup';
-import Login from './Login';
-import Logout from './Logout';
+import Home from './components/Home';
+
+import './styles/App.css';
+import './styles/dashboard.scss';
 
 function App() {
   return (
-    <div>
-      <Signup></Signup>
-      <hr />
-      <Login></Login>
-      <hr />
-      <Logout></Logout>
+    <div className="App">
+      <Home></Home>
     </div>
   );
 }
