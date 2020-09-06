@@ -66,7 +66,7 @@ export default class Home extends React.Component {
       <div>
         <LoginSignup
           isSignedIn={this.state.isSignedIn}
-          logoutUser={this.logoutUser}
+          loginUser={this.loginUser}
         >
         </LoginSignup>
 

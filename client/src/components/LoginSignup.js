@@ -14,7 +14,7 @@ export default class LoginSignup extends React.Component {
         <hr />
         <Login
           isSignedIn={this.props.isSignedIn}
-          loginUser={this.loginUser}
+          loginUser={this.props.loginUser}
         >
         </Login>
       </div>
