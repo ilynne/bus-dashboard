@@ -5,7 +5,8 @@ export default class Signup extends React.Component {
   state = {
     email: '',
     password: '',
-    message: 'message here'
+    message: '',
+    signedUp: false
   }
 
   handleInputChange = (e) => {
@@ -34,12 +35,15 @@ export default class Signup extends React.Component {
     switch(res) {
       case 200:
         this.setMessage('Success! You can login now.');
+        this.setSignedup(true);
         break;
       case 409:
         this.setMessage('A user with that email already exists.');
+        this.setSignedup(false);
         break;
       default:
         this.setMessage('Something went wrong');
+        this.setSignedup(false);
     }
   }
 
@@ -49,42 +53,53 @@ export default class Signup extends React.Component {
     })
   }
 
+  setSignedup = (signedUp) => {
+    this.setState({
+      signedUp: signedUp
+    })
+  }
+
   render() {
     return (
       <div>
         <p>{this.state.message}</p>
-        <form
-          className={'sign-up-form'}
-          onSubmit={this.handleFormSubmit}
-          method={'post'}
-        >
-          <input
-            type={'text'}
-            id={'email'}
-            name={'email'}
-            required={true}
-            onChange={this.handleInputChange}
-          >
-          </input>
-          <input
-            type={'password'}
-            id={'password'}
-            name={'password'}
-            required={true}
-            onChange={this.handleInputChange}
-          >
-          </input>
-          <input
-              type={'submit'}
-              value={'Signup'}
-            >
-            </input>
-        </form>
+        { this.state.signedUp
+          ? null
+          : <div>
+              <form
+                className={'sign-up-form'}
+                onSubmit={this.handleFormSubmit}
+                method={'post'}
+              >
+                <input
+                  type={'text'}
+                  id={'email'}
+                  name={'email'}
+                  required={true}
+                  onChange={this.handleInputChange}
+                >
+                </input>
+                <input
+                  type={'password'}
+                  id={'password'}
+                  name={'password'}
+                  required={true}
+                  onChange={this.handleInputChange}
+                >
+                </input>
+                <input
+                    type={'submit'}
+                    value={'Signup'}
+                  >
+                  </input>
+              </form>
+            </div>
+        }
       </div>
     )
   }
 }
 
 Signup.propTypes = {
-
+  isSignedIn: PropTypes.bool.isRequired,
 }

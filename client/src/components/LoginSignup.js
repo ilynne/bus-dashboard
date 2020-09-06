@@ -8,10 +8,10 @@ export default class LoginSignup extends React.Component {
   render() {
     return (
       <div>
-        <Signup></Signup>
-        <hr />
-        or
-        <hr />
+        { this.props.isSignedIn
+          ? null
+          : <Signup isSignedIn={this.props.isSignedIn}></Signup>
+        }
         <Login
           isSignedIn={this.props.isSignedIn}
           loginUser={this.props.loginUser}
