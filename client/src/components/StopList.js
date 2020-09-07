@@ -13,24 +13,6 @@ export default class StopList extends React.Component {
 
   componentDidMount() {
     this.getStopsForGroup();
-    // const uid = firebase.auth().currentUser.uid;
-
-    // this.unsubscribe = db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .doc(this.props.selectedGroupId)
-    //   .collection('stops')
-    //   .where('busRouteId', '==', this.props.busRouteId)
-    //   .onSnapshot(snapshot => {
-    //     this.setState({ groupStops: snapshot.docs });
-    //   });
-  }
-
-  componentWillUnmount() {
-    // if (this.unsubscribe) {
-    //   this.unsubscribe();
-    // }
   }
 
   getStopsForGroup = () => {
@@ -54,18 +36,6 @@ export default class StopList extends React.Component {
 
   addStop = (e) => {
     console.log('addStop')
-    // const uid = firebase.auth().currentUser.uid;
-    // const { selectedGroupId } = this.props;
-    // db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .doc(selectedGroupId)
-    //   .collection('stops')
-    //   .add({
-    //     stopId: e.target.dataset.id,
-    //     busRouteId: this.props.busRouteId
-    //   })
     const token = localStorage.getItem('busDashboard::token');
     const { id } = e.target.dataset
     const { selectedGroupId } = this.props;
@@ -81,23 +51,32 @@ export default class StopList extends React.Component {
       .then(res => {
         console.log(res)
       })
-      // .then(() => { this.getGroups() })
+      .then(() => { this.getStopsForGroup() })
   }
 
   removeStop = (e) => {
     console.log('removeStop')
-    // const uid = firebase.auth().currentUser.uid;
-    // const { selectedGroupId } = this.props;
-    // const stop = this.state.groupStops.find(
-    //   stop => ( stop.data().stopId === e.target.dataset.id && stop.data().busRouteId === this.props.busRouteId) )
-    // db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .doc(selectedGroupId)
-    //   .collection('stops')
-    //   .doc(stop.id)
-    //   .delete();
+    const token = localStorage.getItem('busDashboard::token');
+    const { recordId } = e.target.dataset
+    const { selectedGroupId } = this.props;
+    axios.delete(`/stops/${recordId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        console.log(res)
+      })
+      .then(() => { this.getStopsForGroup() })
+  }
+
+  groupStopsRecordId = (stopId) => {
+    const stopData = this.state.groupStops.find(stop => { return stop.stopId === stopId })
+    if (stopData) {
+      return stopData._id
+    } else {
+      return null
+    }
   }
 
   render() {
@@ -112,7 +91,8 @@ export default class StopList extends React.Component {
               className={groupStops.includes(stop.id) ? 'selected' : null}
               onClick={groupStops.includes(stop.id) ? this.removeStop : this.addStop}
               key={`stop-${i}`}
-              data-id={stop.id}>{stop.name}</li>
+              data-id={stop.id}
+              data-record-id={this.groupStopsRecordId(stop.id)}>{stop.name}</li>
             ))
           }
         </ul>
