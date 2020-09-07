@@ -30,8 +30,16 @@ export default class StopList extends React.Component {
     })
       .then(res => {
         console.log(res)
-        this.setState({ groupStops: res.data })
+        this.setGroupStops(res.data)
       })
+  }
+
+  setGroupStops = (data) => {
+    console.log('setGroupStops', data, this.props.busRouteId)
+    const groupStopsForBus = data.filter(stop => { return stop.busId === this.props.busRouteId } )
+    this.setState({
+      groupStops: groupStopsForBus
+    })
   }
 
   addStop = (e) => {
