@@ -1,6 +1,7 @@
 import React from 'react';
 import ArrivalDetailList from './ArrivalDetailList';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 export default class ArrivalCard extends React.Component {
   state = {
@@ -19,15 +20,37 @@ export default class ArrivalCard extends React.Component {
   fetchArrivalsForStop = function () {
     const { stopId } = this.props;
 
-    fetch(`/api/v1/stops/${stopId}/arrivals`)
-      .then(res => res.json())
-      .then((response) => { this.setArrivalsForStop(response.data) })
-      .catch((error) => { console.log("Error fetching arrival for stop", error); })
+    // fetch(`/api/v1/stops/${stopId}/arrivals`)
+    //   .then(res => res.json())
+    //   .then((response) => { this.setArrivalsForStop(response.data) })
+    //   .catch((error) => { console.log("Error while fetching test datas", error); })
+    const token = localStorage.getItem('busDashboard::token')
+    console.log(token)
+    console.log(stopId)
+    axios.get(`/oba/stops/${stopId}/arrivals`, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    })
+      .then(res => {
+        console.log(res.data);
+        this.setArrivalsForStop(res.data)
+      })
   }
 
+  // fetchArrivalsForStop = function () {
+  //   const { stopId } = this.props;
+
+  //   fetch(`/api/v1/stops/${stopId}/arrivals`)
+  //     .then(res => res.json())
+  //     .then((response) => { this.setArrivalsForStop(response.data) })
+  //     .catch((error) => { console.log("Error fetching arrival for stop", error); })
+  // }
+
   setArrivalsForStop = (data) => {
+    console.log(data)
     this.setState({
-      arrivalsForStop: data
+      arrivalsForStop: data.data.data
     });
   }
 
@@ -36,13 +59,14 @@ export default class ArrivalCard extends React.Component {
     if (!references) {
       return `retrieving information for stop ${this.props.stopId}...`
     }
+    console.log('references', references)
     const { stops } = references
     const stopData = stops.find(stop => stop.id === this.props.stopId);
     return `${stopData.name} - ${stopData.direction}`;
   }
 
   busRouteIds = () => {
-    const busRouteIds = this.props.busRouteIds.map(busRouteId => ( busRouteId.data().busRouteId))
+    const busRouteIds = this.props.busRouteIds.map(busRouteId => ( busRouteId.busId))
     return busRouteIds
   }
 
