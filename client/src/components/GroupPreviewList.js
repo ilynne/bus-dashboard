@@ -79,6 +79,7 @@ export default class GroupPreviewList extends React.PureComponent {
 
   render() {
     const busesByStop = this.busesByStop();
+    console.log(busesByStop)
 
     return (
       <div className="group-preview">

@@ -15,7 +15,7 @@ export default class AddBus extends React.Component {
       routesForAgency: [],
       stopsByBusRouteId: {},
       directionIndex: -1,
-      selectedGroupId: '5f559f786d3ffc7ecef75226' // set empty for deploy
+      selectedGroupId: '' // set empty for deploy
     }
     this.handleBusNumberChange = this.handleBusNumberChange.bind(this);
     this.fetchRoutesForAgency = this.fetchRoutesForAgency.bind(this);
@@ -46,7 +46,6 @@ export default class AddBus extends React.Component {
   fetchStopsForRoute = () => {
     const token = localStorage.getItem('busDashboard::token');
     const { busRouteId } = this.state;
-    // const id = this.state.busRouteId;
     console.log(token)
     axios.get(`/oba/routes/${busRouteId}/stops`, {
       headers: {
@@ -58,10 +57,6 @@ export default class AddBus extends React.Component {
         this.setStopsByBusRouteId(res.data)
 
       })
-    // fetch(`/api/v1/routes/${this.state.busRouteId}/stops`)
-    //   .then(res => res.json())
-    //   .then((response) => { this.setStopsByBusRouteId(response.data); })
-    //   .catch((error) => { console.log("Error fetching stops for route", error); });
   }
 
   setRoutesForAgency = (data) => {

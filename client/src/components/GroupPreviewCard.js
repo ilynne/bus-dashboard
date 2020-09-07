@@ -36,7 +36,7 @@ export default class GroupPreviewCard extends React.Component {
 
   setArrivalsForStop = (data) => {
     this.setState({
-      arrivalsForStop: data
+      arrivalsForStop: data.data.data
     });
   }
 
@@ -63,7 +63,7 @@ export default class GroupPreviewCard extends React.Component {
       return
     }
     // const route = routesForAgency.find(routeForAgency => { return busRouteId === routeForAgency.id })
-    const route = routesForAgency.find(routeForAgency => { return routeForAgency.id === '1_17698' })
+    const route = routesForAgency.find(routeForAgency => { return routeForAgency.id === busRouteId })
     // const route = routesForAgency[0];
     console.log(route)
     const shortName = route ? route.shortName : 'not found'
@@ -83,7 +83,7 @@ export default class GroupPreviewCard extends React.Component {
         <h2>{stopLabel}</h2>
         { this.props.busRouteIds.map(busRouteId => (
           <p key={busRouteId.stopId}>
-            {this.busRouteShortName(busRouteId.stopId)}
+            {this.busRouteShortName(busRouteId.busId)}
             &nbsp;
             <span
               className={'clickable delete-link'}

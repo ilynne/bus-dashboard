@@ -38,10 +38,11 @@ export default class StopList extends React.Component {
     console.log('addStop')
     const token = localStorage.getItem('busDashboard::token');
     const { id } = e.target.dataset
-    const { selectedGroupId } = this.props;
+    const { selectedGroupId, busRouteId } = this.props;
     const data = {
       stopId: id,
-      groupId: selectedGroupId
+      groupId: selectedGroupId,
+      busId: busRouteId,
     }
     axios.post('/stops', data, {
       headers: {
@@ -58,7 +59,7 @@ export default class StopList extends React.Component {
     console.log('removeStop')
     const token = localStorage.getItem('busDashboard::token');
     const { recordId } = e.target.dataset
-    const { selectedGroupId } = this.props;
+    // const { selectedGroupId } = this.props;
     axios.delete(`/stops/${recordId}`, {
       headers: {
         Authorization: `Bearer ${token}`
