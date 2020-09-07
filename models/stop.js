@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const stopSchema = new mongoose.Schema({
     groupId: { type: mongoose.Schema.Types.ObjectId, ref: 'groups', required: true },
-    stopId: { type: String, required : true}
+    stopId: { type: String, required : true }
 });
 
 stopSchema.index({ groupId: 1, stopId: 1 }, { unique: true });

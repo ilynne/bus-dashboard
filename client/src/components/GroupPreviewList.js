@@ -2,21 +2,47 @@ import React from 'react';
 import _ from 'lodash';
 import GroupPreviewCard from './GroupPreviewCard';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 export default class GroupPreviewList extends React.PureComponent {
   state = {
     stops: []
   }
 
+  // componentDidMount() {
+  //   this.getStops();
+  // }
+
+  // componentWillUnmount() {
+  //   if (this.unsubscribe) {
+  //     this.unsubscribe();
+  //   }
+  // }
+
   componentDidMount() {
-    this.getStops();
+    this.getStopsForGroup();
   }
 
-  componentWillUnmount() {
-    if (this.unsubscribe) {
-      this.unsubscribe();
+  getStopsForGroup = () => {
+    console.log('GroupPreviewList getStopsForGroup')
+    const token = localStorage.getItem('busDashboard::token');
+    const { selectedGroupId } = this.props;
+    const data = {
+      groupId: selectedGroupId
     }
+    axios.get('/stops', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: data
+    })
+      .then(res => {
+        console.log(res)
+        this.setState({ stops: res.data })
+      })
   }
+
+
 
   getStops = () => {
     // const uid = firebase.auth().currentUser.uid;
@@ -48,7 +74,7 @@ export default class GroupPreviewList extends React.PureComponent {
   }
 
   busesByStop = () => {
-    return _.groupBy(this.state.stops, (stop) => ( stop.data().stopId ))
+    return _.groupBy(this.state.stops, (stop) => ( stop.stopId ))
   }
 
   render() {
