@@ -4,6 +4,7 @@ import StopList from './StopList';
 import GroupList from './GroupList';
 import GroupPreviewList from './GroupPreviewList';
 import BusInput from './BusInput';
+import axios from 'axios';
 
 export default class AddBus extends React.Component {
   constructor(props) {
@@ -30,18 +31,16 @@ export default class AddBus extends React.Component {
   fetchRoutesForAgency = function () {
     const token = localStorage.getItem('busDashboard::token')
     console.log(token)
-    // fetch('/login/logout', {
-    //   method: 'POST',
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: JSON.stringify({ token: token })
+    axios.get('/oba/routes/1', {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    })
+      .then(res => {
+        console.log(res, res.data);
+        this.setRoutesForAgency(res.data)
 
-    fetch('/oba/routes/1')
-      .then(res => res.json(), {
-        method: 'GET',
-        headers: {'Authorization': `Bearer $token`}
       })
-      .then((response) => { this.setRoutesForAgency(response.data) })
-      .catch((error) => { console.log("Error fetching routes for agency", error); });
   }
 
   fetchStopsForRoute = () => {
@@ -52,7 +51,7 @@ export default class AddBus extends React.Component {
   }
 
   setRoutesForAgency = (data) => {
-    const { list } = data.data;
+    const { list } = data.data.data;
     console.log(list)
     this.setState({
       routesForAgency: list
