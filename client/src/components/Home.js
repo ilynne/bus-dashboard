@@ -5,13 +5,17 @@ import Login from './Login';
 import Logout from './Logout';
 import LoginSignup from './LoginSignup';
 import Header from './Header';
+import Dashboard from './Dashboard';
 
 export default class Home extends React.Component {
   state = {
+    auth: {
+      token: ''
+    },
     token: '',
     isSignedIn: false,
     selectedGroupId: '',
-    admin: false
+    admin: true // set to false for deploy
   }
 
   componentDidMount = () => {
@@ -19,7 +23,6 @@ export default class Home extends React.Component {
   }
 
   loginUser = (data) => {
-    console.log('logging in')
     fetch('/login', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -32,10 +35,11 @@ export default class Home extends React.Component {
   }
 
   logoutUser = () => {
+    const { token } = this.state.auth
     fetch('/login/logout', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(this.state)
+      body: JSON.stringify({ token: token })
     })
     .then(res => res.json())
     .then(() => this.removeAuthToken())
@@ -44,7 +48,6 @@ export default class Home extends React.Component {
   }
 
   setAuthToken = (response) => {
-    console.log('setAuthToken')
     const { token } = response;
     localStorage.setItem('busDashboard::token', token);
   }
@@ -57,7 +60,9 @@ export default class Home extends React.Component {
     console.log('setAuthState')
     const token = localStorage.getItem('busDashboard::token') || '';
     this.setState({
-      token: token,
+      auth: {
+        token: token
+      },
       isSignedIn: token.length > 0
     })
   }
@@ -72,7 +77,11 @@ export default class Home extends React.Component {
         </Header>
 
         { this.state.isSignedIn
-          ? <p>stuff here</p>
+          ? <Dashboard
+              admin={this.state.admin}
+              selectedGroupId={this.state.selectedGroupId}
+            >
+            </Dashboard>
           : <LoginSignup
               isSignedIn={this.state.isSignedIn}
               loginUser={this.loginUser}
