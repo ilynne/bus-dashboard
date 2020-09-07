@@ -52,7 +52,7 @@ export default class GroupList extends React.Component {
       }
     })
       .then(res => {
-        console.log(res)
+        this.props.handleGroupClick(res.data._id)
       })
       .then(() => { this.getGroups() })
   }
