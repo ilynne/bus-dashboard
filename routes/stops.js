@@ -7,9 +7,9 @@ const stopDAO = require('../daos/stops');
 router.post("/",
     isAuthorized,
     async (req, res, next) => {
-        const { groupId, stopId } = req.body;
+        const { groupId, stopId, busId } = req.body;
         try {
-            const newStop = await stopDAO.create(groupId, stopId);
+            const newStop = await stopDAO.create(groupId, stopId, busId);
             res.json(newStop);
         } catch(e) {
             next(e);
@@ -18,7 +18,7 @@ router.post("/",
 );
 
 router.get("/",
-    isAuthorized,    
+    isAuthorized,
     async (req, res, next) => {
         let { groupId } = req.query;
         if (groupId) {
@@ -58,8 +58,8 @@ router.put("/:id",
     isValidId,
     async (req, res, next) => {
         const id = req.params.id;
-        const {groupId, stopId} = req.body;
-        const updatedStop = await stopDAO.updateById(id, groupId, stopId);
+        const {groupId, stopId, busId} = req.body;
+        const updatedStop = await stopDAO.updateById(id, groupId, stopId, busId);
         if (updatedStop) {
             res.json(updatedStop)
         } else {

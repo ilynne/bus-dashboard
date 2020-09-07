@@ -10,12 +10,12 @@ export default class AddBus extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      busNumber: '',
-      busRouteId: '',
+      busNumber: '', // set empty
+      busRouteId: '', //set empty for deploy
       routesForAgency: [],
       stopsByBusRouteId: {},
       directionIndex: -1,
-      selectedGroupId: ''
+      selectedGroupId: '' // set empty for deploy
     }
     this.handleBusNumberChange = this.handleBusNumberChange.bind(this);
     this.fetchRoutesForAgency = this.fetchRoutesForAgency.bind(this);
@@ -44,10 +44,19 @@ export default class AddBus extends React.Component {
   }
 
   fetchStopsForRoute = () => {
-    fetch(`/api/v1/routes/${this.state.busRouteId}/stops`)
-      .then(res => res.json())
-      .then((response) => { this.setStopsByBusRouteId(response.data); })
-      .catch((error) => { console.log("Error fetching stops for route", error); });
+    const token = localStorage.getItem('busDashboard::token');
+    const { busRouteId } = this.state;
+    console.log(token)
+    axios.get(`/oba/routes/${busRouteId}/stops`, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    })
+      .then(res => {
+        console.log(res, res.data);
+        this.setStopsByBusRouteId(res.data)
+
+      })
   }
 
   setRoutesForAgency = (data) => {
@@ -59,10 +68,12 @@ export default class AddBus extends React.Component {
   }
 
   setStopsByBusRouteId = (data) => {
+    console.log('setStopsByBusRouteId', data)
     const { busRouteId } = this.state;
+    console.log(data, busRouteId)
     this.setState({
       stopsByBusRouteId: {
-        [busRouteId]: data,
+        [busRouteId]: data.data.data,
         ...this.state.stopsByBusRouteId
       }
     });
@@ -95,6 +106,7 @@ export default class AddBus extends React.Component {
   }
 
   stopsForDirection() {
+    console.log('getting stopsForDirection')
     const stopGroups = this.stopGroups();
     const { directionIndex } = this.state;
     if (directionIndex >= 0) {
@@ -119,7 +131,9 @@ export default class AddBus extends React.Component {
   }
 
   stopGroups = () => {
+    console.log('getting stopGroups')
     const { busRouteId, stopsByBusRouteId } = this.state;
+    console.log(busRouteId, stopsByBusRouteId, stopsByBusRouteId[busRouteId])
     const { entry } = stopsByBusRouteId[busRouteId] || [];
     if (entry) {
       return entry.stopGroupings[0].stopGroups;

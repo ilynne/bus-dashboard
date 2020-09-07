@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 export default class GroupList extends React.Component {
   state = {
@@ -14,6 +15,7 @@ export default class GroupList extends React.Component {
   }
 
   handleGroupClick = (e) => {
+    e.preventDefault();
     this.props.handleGroupClick(e.target.dataset.id);
   }
 
@@ -25,55 +27,50 @@ export default class GroupList extends React.Component {
     }
   }
 
-  addGroup = (groupName) => {
-    // fetch('/login/signup', {
-    //   method: 'POST',
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: JSON.stringify(this.state)
-    // })
-    // .then(res => { this.handleSignupResponse(res.status) })
-    // .catch((error) => { console.log("error", error)})
+  getGroups = () => {
+    const token = localStorage.getItem('busDashboard::token')
+    console.log(token)
+    axios.get('/groups', {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    })
+      .then(res => {
+        console.log(res, res.data);
+        this.setState({
+          groups: res.data
+        })
+      })
+  }
 
-    // const uid = firebase.auth().currentUser.uid;
-    // db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .add({
-    //     name: this.state.newGroupName
-    //   }).then(() => {
-    //     this.setState({ newGroupName: '' })
-    //   })
+  addGroup = (groupName) => {
+    const token = localStorage.getItem('busDashboard::token');
+    const data = { name: this.state.newGroupName }
+    axios.post('/groups', data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        this.props.handleGroupClick(res.data._id)
+      })
+      .then(() => { this.getGroups() })
   }
 
   removeGroup = (e) => {
-    // const uid = firebase.auth().currentUser.uid;
-    // db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .doc(e.target.dataset.id)
-    //   .delete();
+    console.log(e.target.dataset.id);
+    const token = localStorage.getItem('busDashboard::token');
+    const { id } = e.target.dataset
+    axios.delete(`/groups/${id}`, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    })
+      .then(() => this.getGroups())
   }
 
   componentDidMount() {
-    // let auth = this.context;
-    // console.log(auth)
-    // const uid = firebase.auth().currentUser.uid;
-
-    // this.unsubscribe = db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .onSnapshot(snapshot => {
-    //     this.setState({ groups: snapshot.docs });
-    //   });
-  }
-
-  componentWillUnmount() {
-    // if (this.unsubscribe) {
-    //   this.unsubscribe();
-    // }
+    this.getGroups();
   }
 
   render() {
@@ -83,15 +80,15 @@ export default class GroupList extends React.Component {
           <ul>
             { this.state.groups.map((group) => (
               <li
-                className={this.props.selectedGroupId === group.id ? 'selected' : null}
+                className={this.props.selectedGroupId === group._id ? 'selected' : null}
                 onClick={this.handleGroupClick}
-                key={group.id}
-                data-id={group.id}>
-                  {group.data().name}
+                key={group._id}
+                data-id={group._id}>
+                  {group.name}
                   &nbsp;
                   <span
                     className={'clickable delete-link'}
-                    data-id={group.id}
+                    data-id={group._id}
                     onClick={this.removeGroup}
                   >
                     delete

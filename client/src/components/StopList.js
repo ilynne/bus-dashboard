@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 export default class StopList extends React.Component {
   state = {
@@ -11,58 +12,84 @@ export default class StopList extends React.Component {
   }
 
   componentDidMount() {
-    // const uid = firebase.auth().currentUser.uid;
-
-    // this.unsubscribe = db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .doc(this.props.selectedGroupId)
-    //   .collection('stops')
-    //   .where('busRouteId', '==', this.props.busRouteId)
-    //   .onSnapshot(snapshot => {
-    //     this.setState({ groupStops: snapshot.docs });
-    //   });
+    this.getStopsForGroup();
   }
 
-  componentWillUnmount() {
-    // if (this.unsubscribe) {
-    //   this.unsubscribe();
-    // }
+  getStopsForGroup = () => {
+    console.log('getStopsForGroup')
+    const token = localStorage.getItem('busDashboard::token');
+    const { selectedGroupId } = this.props;
+    const data = {
+      groupId: selectedGroupId
+    }
+    axios.get('/stops', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: data
+    })
+      .then(res => {
+        console.log(res)
+        this.setGroupStops(res.data)
+      })
+  }
+
+  setGroupStops = (data) => {
+    console.log('setGroupStops', data, this.props.busRouteId)
+    const groupStopsForBus = data.filter(stop => { return stop.busId === this.props.busRouteId } )
+    this.setState({
+      groupStops: groupStopsForBus
+    })
   }
 
   addStop = (e) => {
-    // const uid = firebase.auth().currentUser.uid;
-    // const { selectedGroupId } = this.props;
-    // db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .doc(selectedGroupId)
-    //   .collection('stops')
-    //   .add({
-    //     stopId: e.target.dataset.id,
-    //     busRouteId: this.props.busRouteId
-    //   })
+    console.log('addStop')
+    const token = localStorage.getItem('busDashboard::token');
+    const { id } = e.target.dataset
+    const { selectedGroupId, busRouteId } = this.props;
+    const data = {
+      stopId: id,
+      groupId: selectedGroupId,
+      busId: busRouteId,
+    }
+    axios.post('/stops', data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        console.log(res)
+      })
+      .then(() => { this.getStopsForGroup() })
   }
 
   removeStop = (e) => {
-    // const uid = firebase.auth().currentUser.uid;
+    console.log('removeStop')
+    const token = localStorage.getItem('busDashboard::token');
+    const { recordId } = e.target.dataset
     // const { selectedGroupId } = this.props;
-    // const stop = this.state.groupStops.find(
-    //   stop => ( stop.data().stopId === e.target.dataset.id && stop.data().busRouteId === this.props.busRouteId) )
-    // db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .doc(selectedGroupId)
-    //   .collection('stops')
-    //   .doc(stop.id)
-    //   .delete();
+    axios.delete(`/stops/${recordId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        console.log(res)
+      })
+      .then(() => { this.getStopsForGroup() })
+  }
+
+  groupStopsRecordId = (stopId) => {
+    const stopData = this.state.groupStops.find(stop => { return stop.stopId === stopId })
+    if (stopData) {
+      return stopData._id
+    } else {
+      return null
+    }
   }
 
   render() {
-    const groupStops = this.state.groupStops.map(stop => ( stop.data().stopId ));
+    const groupStops = this.state.groupStops.map(stop => ( stop.stopId ));
 
     return (
       <div>
@@ -73,7 +100,8 @@ export default class StopList extends React.Component {
               className={groupStops.includes(stop.id) ? 'selected' : null}
               onClick={groupStops.includes(stop.id) ? this.removeStop : this.addStop}
               key={`stop-${i}`}
-              data-id={stop.id}>{stop.name}</li>
+              data-id={stop.id}
+              data-record-id={this.groupStopsRecordId(stop.id)}>{stop.name}</li>
             ))
           }
         </ul>

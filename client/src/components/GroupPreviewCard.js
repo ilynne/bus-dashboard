@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 export default class GroupPreviewCard extends React.Component {
   state = {
@@ -14,15 +15,28 @@ export default class GroupPreviewCard extends React.Component {
   fetchArrivalsForStop = function () {
     const { stopId } = this.props;
 
-    fetch(`/api/v1/stops/${stopId}/arrivals`)
-      .then(res => res.json())
-      .then((response) => { this.setArrivalsForStop(response.data) })
-      .catch((error) => { console.log("Error while fetching test datas", error); })
+    // fetch(`/api/v1/stops/${stopId}/arrivals`)
+    //   .then(res => res.json())
+    //   .then((response) => { this.setArrivalsForStop(response.data) })
+    //   .catch((error) => { console.log("Error while fetching test datas", error); })
+    const token = localStorage.getItem('busDashboard::token')
+    console.log(token)
+    console.log(stopId)
+    axios.get(`/oba/stops/${stopId}/arrivals`, {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    })
+      .then(res => {
+        console.log(res.data);
+        this.setArrivalsForStop(res.data)
+
+      })
   }
 
   setArrivalsForStop = (data) => {
     this.setState({
-      arrivalsForStop: data
+      arrivalsForStop: data.data.data
     });
   }
 
@@ -37,22 +51,28 @@ export default class GroupPreviewCard extends React.Component {
   }
 
   busRouteIds = () => {
-    const busRouteIds = this.props.busRouteIds.map(busRouteId => ( busRouteId.data().busRouteId))
+    const busRouteIds = this.props.busRouteIds.map(busRouteId => ( busRouteId.busRouteId))
     return busRouteIds
   }
 
   busRouteShortName = (busRouteId) => {
     const { routesForAgency } = this.props;
-    if (!routesForAgency) {
+    console.log('busRouteShortName, busRouteId', busRouteId, routesForAgency)
+    if (!routesForAgency || routesForAgency.length < 1) {
+      console.log('routesForAgency not populated')
       return
     }
-    const route = routesForAgency.find(route => busRouteId === route.id)
+    // const route = routesForAgency.find(routeForAgency => { return busRouteId === routeForAgency.id })
+    const route = routesForAgency.find(routeForAgency => { return routeForAgency.id === busRouteId })
+    // const route = routesForAgency[0];
+    console.log(route)
     const shortName = route ? route.shortName : 'not found'
     return shortName
   }
 
   handleDeleteClick = (e) => {
-    this.props.handleDeleteClick(e.target.dataset.id)
+    console.log('delete')
+    // this.props.handleDeleteClick(e.target.dataset.id)
   }
 
   render() {
@@ -62,12 +82,12 @@ export default class GroupPreviewCard extends React.Component {
       <div className={'group-preview-card'}>
         <h2>{stopLabel}</h2>
         { this.props.busRouteIds.map(busRouteId => (
-          <p key={busRouteId.id}>
-            {this.busRouteShortName(busRouteId.data().busRouteId)}
+          <p key={busRouteId.stopId}>
+            {this.busRouteShortName(busRouteId.busId)}
             &nbsp;
             <span
               className={'clickable delete-link'}
-              data-id={busRouteId.id}
+              data-id={busRouteId.stopId}
               onClick={this.handleDeleteClick}
             >
               &nbsp;

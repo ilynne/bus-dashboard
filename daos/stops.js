@@ -4,11 +4,12 @@ const Stop = require('../models/stop');
 
 module.exports = {};
 
-module.exports.create = async(groupId, stopId) => {
+module.exports.create = async(groupId, stopId, busId) => {
     try {
         const newStop = await Stop.create({
             groupId: groupId,
-            stopId: stopId
+            stopId: stopId,
+            busId: busId,
         });
         return newStop;
     } catch (e) {
@@ -46,10 +47,11 @@ module.exports.getById = async (id) => {
     }
 }
 
-module.exports.updateById = async (id, groupId, stopId) => {
+module.exports.updateById = async (id, groupId, stopId, busId) => {
     let updateObj = {};
     if (groupId) { updateObj.groupId = groupId};
     if (stopId) { updateObj.stopId = stopId};
+    if (busId) { updateObj.stopId = busId};
 
     try {
         const updatedStop = await Stop.update({ _id: id }, updateObj);
