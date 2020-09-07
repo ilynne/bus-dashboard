@@ -2,6 +2,7 @@ import React from 'react';
 import LoginSignup from './LoginSignup';
 import Header from './Header';
 import Dashboard from './Dashboard';
+import Navigation from './Navigation';
 
 export default class Home extends React.Component {
   state = {
@@ -11,7 +12,7 @@ export default class Home extends React.Component {
     token: '',
     isSignedIn: false,
     selectedGroupId: '',
-    admin: true // set to false for deploy
+    admin: false // set to false for deploy
   }
 
   componentDidMount = () => {
@@ -63,6 +64,20 @@ export default class Home extends React.Component {
     })
   }
 
+  handleGroupClick = (tabId) => {
+    if (tabId === 'admin') {
+      this.setState({
+        admin: true,
+        selectedGroupId: ''
+      })
+    } else {
+      this.setState({
+        admin: false,
+        selectedGroupId: tabId
+      })
+    }
+  }
+
   render() {
     return (
       <div>
@@ -71,7 +86,13 @@ export default class Home extends React.Component {
           logoutUser={this.logoutUser}
         >
         </Header>
-
+        <Navigation
+          isSignedIn={this.state.isSignedIn}
+          signOut={this.logoutUser}
+          handleGroupClick={this.handleGroupClick}
+          admin={this.state.admin}
+          selectedGroupId={this.state.selectedGroupId}>
+        </Navigation>
         { this.state.isSignedIn
           ? <Dashboard
               admin={this.state.admin}
