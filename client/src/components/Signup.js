@@ -61,7 +61,7 @@ export default class Signup extends React.Component {
 
   render() {
     return (
-      <div class="signin-form-container">
+      <div className="signin-form-container">
         <p>{this.state.message}</p>
         { this.state.signedUp
           ? null

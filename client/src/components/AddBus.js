@@ -15,7 +15,8 @@ export default class AddBus extends React.Component {
       routesForAgency: [],
       stopsByBusRouteId: {},
       directionIndex: -1,
-      selectedGroupId: ''
+      selectedGroupId: '',
+      groupStops: []
     }
     this.handleBusNumberChange = this.handleBusNumberChange.bind(this);
     this.fetchRoutesForAgency = this.fetchRoutesForAgency.bind(this);
@@ -26,6 +27,31 @@ export default class AddBus extends React.Component {
 
   componentDidMount = () => {
     this.fetchRoutesForAgency();
+  }
+
+  getStopsForGroup = () => {
+    console.log('getStopsForGroup')
+    const token = localStorage.getItem('busDashboard::token');
+    const { selectedGroupId } = this.props;
+    const data = {
+      groupId: selectedGroupId
+    }
+    axios.get('/stops', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: data
+    })
+      .then(res => {
+        this.setGroupStops(res.data)
+      })
+  }
+
+  setGroupStops = (data) => {
+    const groupStopsForBus = data.filter(stop => { return stop.busId === this.props.busRouteId } )
+    this.setState({
+      groupStops: groupStopsForBus
+    })
   }
 
   fetchRoutesForAgency = function () {
@@ -89,7 +115,7 @@ export default class AddBus extends React.Component {
       busNumber: '',
       busRouteId: '',
       directionIndex: -1
-    });
+    }, this.getStopsForGroup())
   }
 
   handleDirectionClick(index) {
@@ -169,6 +195,7 @@ export default class AddBus extends React.Component {
                   busRouteId={this.state.busRouteId}
                   selectedGroupId={this.state.selectedGroupId}
                   stopsForDirection={stopsForDirection}
+                  afterSelection={this.getStopsForGroup}
                 >
                 </StopList>
               : null
@@ -177,7 +204,8 @@ export default class AddBus extends React.Component {
         { this.state.selectedGroupId !== ''
           ? <GroupPreviewList
               selectedGroupId={this.state.selectedGroupId}
-              routesForAgency={this.state.routesForAgency}>
+              routesForAgency={this.state.routesForAgency}
+              groupStops={this.state.groupStops}>
             </GroupPreviewList>
           : null
         }

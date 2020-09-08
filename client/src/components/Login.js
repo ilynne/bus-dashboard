@@ -22,7 +22,7 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <div class="signin-form-container">
+      <div className="signin-form-container">
         <form
           className={'login-form'}
           onSubmit={this.handleFormSubmit}

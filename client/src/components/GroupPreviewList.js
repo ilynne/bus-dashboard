@@ -67,5 +67,6 @@ export default class GroupPreviewList extends React.PureComponent {
 
 GroupPreviewList.propTypes = {
   selectedGroupId: PropTypes.string.isRequired,
-  routesForAgency: PropTypes.arrayOf(PropTypes.object).isRequired
+  routesForAgency: PropTypes.arrayOf(PropTypes.object).isRequired,
+  groupStops: PropTypes.arrayOf(PropTypes.object).isRequired,
 }

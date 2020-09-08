@@ -16,7 +16,6 @@ export default class StopList extends React.Component {
   }
 
   getStopsForGroup = () => {
-    console.log('getStopsForGroup')
     const token = localStorage.getItem('busDashboard::token');
     const { selectedGroupId } = this.props;
     const data = {
@@ -29,13 +28,11 @@ export default class StopList extends React.Component {
       params: data
     })
       .then(res => {
-        console.log(res)
         this.setGroupStops(res.data)
       })
   }
 
   setGroupStops = (data) => {
-    console.log('setGroupStops', data, this.props.busRouteId)
     const groupStopsForBus = data.filter(stop => { return stop.busId === this.props.busRouteId } )
     this.setState({
       groupStops: groupStopsForBus
@@ -43,7 +40,6 @@ export default class StopList extends React.Component {
   }
 
   addStop = (e) => {
-    console.log('addStop')
     const token = localStorage.getItem('busDashboard::token');
     const { id } = e.target.dataset
     const { selectedGroupId, busRouteId } = this.props;
@@ -57,14 +53,10 @@ export default class StopList extends React.Component {
         Authorization: `Bearer ${token}`
       }
     })
-      .then(res => {
-        console.log(res)
-      })
-      .then(() => { this.getStopsForGroup() })
+      .then(() => this.props.afterSelection() )
   }
 
   removeStop = (e) => {
-    console.log('removeStop')
     const token = localStorage.getItem('busDashboard::token');
     const { recordId } = e.target.dataset
     axios.delete(`/stops/${recordId}`, {
@@ -73,9 +65,8 @@ export default class StopList extends React.Component {
       }
     })
       .then(res => {
-        console.log(res)
       })
-      .then(() => { this.getStopsForGroup() })
+      .then(() => this.props.afterSelection() )
   }
 
   groupStopsRecordId = (stopId) => {
@@ -113,4 +104,5 @@ StopList.propTypes = {
   busRouteId: PropTypes.string.isRequired,
   selectedGroupId: PropTypes.string.isRequired,
   stopsForDirection: PropTypes.arrayOf(PropTypes.object).isRequired,
+  afterSelection: PropTypes.func.isRequired,
 }
