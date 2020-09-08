@@ -1,13 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import Signup from './Signup';
-import Login from './Login';
-import Logout from './Logout';
 import LoginSignup from './LoginSignup';
 import Header from './Header';
+import Dashboard from './Dashboard';
+import Navigation from './Navigation';
 
 export default class Home extends React.Component {
   state = {
+    auth: {
+      token: ''
+    },
     token: '',
     isSignedIn: false,
     selectedGroupId: '',
@@ -19,7 +20,6 @@ export default class Home extends React.Component {
   }
 
   loginUser = (data) => {
-    console.log('logging in')
     fetch('/login', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -32,10 +32,11 @@ export default class Home extends React.Component {
   }
 
   logoutUser = () => {
+    const { token } = this.state.auth
     fetch('/login/logout', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(this.state)
+      body: JSON.stringify({ token: token })
     })
     .then(res => res.json())
     .then(() => this.removeAuthToken())
@@ -44,7 +45,6 @@ export default class Home extends React.Component {
   }
 
   setAuthToken = (response) => {
-    console.log('setAuthToken')
     const { token } = response;
     localStorage.setItem('busDashboard::token', token);
   }
@@ -54,12 +54,27 @@ export default class Home extends React.Component {
   }
 
   setAuthState = () => {
-    console.log('setAuthState')
     const token = localStorage.getItem('busDashboard::token') || '';
     this.setState({
-      token: token,
+      auth: {
+        token: token
+      },
       isSignedIn: token.length > 0
     })
+  }
+
+  handleGroupClick = (tabId) => {
+    if (tabId === 'admin') {
+      this.setState({
+        admin: true,
+        selectedGroupId: ''
+      })
+    } else {
+      this.setState({
+        admin: false,
+        selectedGroupId: tabId
+      })
+    }
   }
 
   render() {
@@ -70,9 +85,19 @@ export default class Home extends React.Component {
           logoutUser={this.logoutUser}
         >
         </Header>
-
+        <Navigation
+          isSignedIn={this.state.isSignedIn}
+          signOut={this.logoutUser}
+          handleGroupClick={this.handleGroupClick}
+          admin={this.state.admin}
+          selectedGroupId={this.state.selectedGroupId}>
+        </Navigation>
         { this.state.isSignedIn
-          ? <p>stuff here</p>
+          ? <Dashboard
+              admin={this.state.admin}
+              selectedGroupId={this.state.selectedGroupId}
+            >
+            </Dashboard>
           : <LoginSignup
               isSignedIn={this.state.isSignedIn}
               loginUser={this.loginUser}

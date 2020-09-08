@@ -6,7 +6,7 @@ const testUtils = require('../test-utils');
 describe("/stops", () => {
     beforeAll(testUtils.connectDB);
     afterAll(testUtils.stopDB);
-  
+
     afterEach(testUtils.clearDB);
 
     const group0 = { name: "group0", origin: "Seattle", destination: "Portland" };
@@ -105,8 +105,8 @@ describe("/stops", () => {
             user0Group = (await request(server).post("/groups").set('Authorization', 'Bearer ' + token0).send(group0)).body;
             user1Group = (await request(server).post("/groups").set('Authorization', 'Bearer ' + token1).send(group1)).body;
 
-            stop0 = { groupId: `${user0Group._id}`, stopId: "3rdAveAndPike"};
-            stop1 = { groupId: `${user1Group._id}`, stopId: "3rdAveAndPike"};
+            stop0 = { groupId: `${user0Group._id}`, stopId: "3rdAveAndPike", busId: "1_000234"};
+            stop1 = { groupId: `${user1Group._id}`, stopId: "3rdAveAndPike", busId: "1_000234"};
         });
         describe('POST /', () => {
           it('allows the same stopId for different groups', async () => {
@@ -123,7 +123,7 @@ describe("/stops", () => {
             expect(res2.statusCode).toEqual(200);
             expect(res2.body).toMatchObject(stop1);
           });
-          it('it does not allow a duplicate stopIds for the same group', async () => {
+          it('it does not allow a duplicate busId for the same group and stop', async () => {
             const res = await request(server)
               .post("/stops")
               .set('Authorization', 'Bearer ' + token0)

@@ -6,7 +6,7 @@ const testUtils = require('../test-utils');
 describe("/buses", () => {
     beforeAll(testUtils.connectDB);
     afterAll(testUtils.stopDB);
-  
+
     afterEach(testUtils.clearDB);
 
     describe('Before login', () => {
@@ -124,11 +124,13 @@ describe("/buses", () => {
 
             stop0 = {
                 groupId: `${user0Group._id}`,
-                stopId: "3rdAveAndPike"
+                stopId: "3rdAveAndPike",
+                busId: "1_000235"
             };
             stop1 = {
                 groupId: `${user1Group._id}`,
-                stopId: "3rdAveAndBell"
+                stopId: "3rdAveAndBell",
+                busId: "1_000235"
             };
 
             user0Stop = (await request(server).post("/stops").set('Authorization', 'Bearer ' + token0).send(stop0)).body;
