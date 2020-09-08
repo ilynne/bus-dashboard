@@ -12,7 +12,7 @@ export default class Home extends React.Component {
     token: '',
     isSignedIn: false,
     selectedGroupId: '',
-    admin: false // set to false for deploy
+    admin: false
   }
 
   componentDidMount = () => {
@@ -54,7 +54,6 @@ export default class Home extends React.Component {
   }
 
   setAuthState = () => {
-    console.log('setAuthState')
     const token = localStorage.getItem('busDashboard::token') || '';
     this.setState({
       auth: {
