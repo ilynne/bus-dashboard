@@ -1,4 +1,4 @@
-# Bus Dashboard API
+# Bus Dashboard API & React Frontend
 
 Our proposal is to create a Node.js API for the Bus Dashboard React app that Lynne created for JS300. The Github repo for the app is at https://github.com/ilynne/bus-arrival-dashboard. It is currently hosted on https://intense-brushlands-86127.herokuapp.com/.
 
@@ -8,9 +8,38 @@ The bus dashboard displays groups of buses at stops. If you have a few stops clo
 
 ## Deployed Application
 
-The application is currently deployed to https://whispering-caverns-88263.herokuapp.com. There is no front end at this time, but most of the routes work. You can test them using Postman.
+The application is currently deployed to https://whispering-caverns-88263.herokuapp.com. The `/buses` routes have not yet been integrated into the live app but are working. You can test them using Postman.
 
-## Test this API
+## Test this App
+
+### Create an account and login
+
+(wireframes/SingupAndLogin.jpg)
+
+Use the sign up function to create your account. The database prevents duplicate accounts.
+
+Afterwards, use the login function to log into your account. You will receive a token and see the following landing page:
+(wireframes/Setup1.jpg)
+
+### Creating a Group of Stops and Buses
+
+(wireframes/Setup2.jpg)
+
+Create groups of stops and buses through the admin tab by given your group a name. Then assign a bus and the desired stops. Reload the page to see the new group under the header.
+
+### Viewing a Group of Stops and Buses
+
+(wireframes/dashboard.jpg)
+
+Groups will be displayed under the header. Click on a group to display its related stops and buses. OBA will supply the real time data.
+
+### Deleting a Group or Stop
+
+(wireframes/Delete.jpg)
+
+Use the admin page to delete individual stops or whole groups. You can also add additional buses or stops to existing groups.
+
+## Test this API (postman)
 
 ### Create an account
 
@@ -48,17 +77,40 @@ You will receive a token. Use it to set a `Bearer Token` for the following.
 }
 ```
 
-You will receive a `Group` object.
+You will receive a `Group` object. Note the `_id` for the groupId field for creating a Stop.
 
-Other routes work as expected; see schema and routes below.
+### Create a Stop
 
-Completed items are checked below.
+`POST` to https://whispering-caverns-88263.herokuapp.com/stops. Send:
+```
+{
+  "groupId":<groupId>,
+  "stopId":"OBA stop reference name",
+  "busId":"OBA bus reference name"
+}
+```
+
+You will receive a `Stop` object. Note the `_id` for the stopId field for creating a Bus.
+
+### Create a Bus
+
+`POST` to https://whispering-caverns-88263.herokuapp.com/buses. Send:
+```
+{
+  "stopId":<stopId>,
+  "busId":"OBA bus reference name"
+}
+```
+
+You will receive a `Bus` object.
+
+## Project Progress
 
 ### One Bus Away Routes
 
-`GET` https://whispering-caverns-88263.herokuapp.com/oba/routes/1. You will get data for all the routes for King County Metro.
-`GET` https://whispering-caverns-88263.herokuapp.com/oba/routes/1_100252/stops. You will get stops for the route id. The sample is the 62.
-`GET` https://whispering-caverns-88263.herokuapp.com/oba/stops/1_420/arrivals. You will get stops for the route id. The sample is the SE 3rd and Virginia.
+- `GET` https://whispering-caverns-88263.herokuapp.com/oba/routes/1. You will get data for all the routes for King County Metro.
+- `GET` https://whispering-caverns-88263.herokuapp.com/oba/routes/1_100252/stops. You will get stops for the route id. The sample is the 62.
+- `GET` https://whispering-caverns-88263.herokuapp.com/oba/stops/1_420/arrivals. You will get stops for the route id. The sample is the SE 3rd and Virginia.
 
 ### Authentication:
 
@@ -80,7 +132,7 @@ Groups:
 Stops:
 
 - [x] POST `/stops`
-- [x] GET `/stops` -- [x] should allow a groupId query param to list only stops that belong to a single group.
+- [x] GET `/stops` -- should allow a groupId query param to list only stops that belong to a single group.
 - [x] GET `/stops/:id`
 - [x] PUT `/stops/:id`
 - [x] DELETE `/stops/:id`
@@ -103,7 +155,7 @@ This data must be pulled from the OneBusAway API using an API key. It should not
 
 ### Migration:
 
-- [ ] The current app does not have a default option for the group. It also uses one table for buses at stops. We will need to migrate these. We also need to migrate existing users, who will need to reset their passwords.
+- [ ] ~The current app does not have a default option for the group. It also uses one table for buses at stops. We will need to migrate these. We also need to migrate existing users, who will need to reset their passwords.~ -- this step was deemed unnecessary for phase 1 of this project
 
 ### Models
 
@@ -134,3 +186,25 @@ Bus:
 
 - [x] stopId
 - [x] busId -- OneBusAway id, must be unique to the stop
+
+## Project Retrospective
+
+Overall, the project managed to deliver on the promises that had been made in the beginning. The dashboard was created and is functional. While some functionality and interfaces remain rough around the edges, this should be easily resolved during a second phase.
+
+The issues we experienced were less concerned with setting up the API or testing that is was working. They were more technical in nature when it came to deploying and integrating the API with a React frontend. Overall, we experienced a lot of issues with branching and continuous integration when deploying to heroku and issues with React and the express router of the API.
+
+Please see the notes below for additional points.
+
+### Continue
+
+- Use OBA to provide real time arrival data
+- Level of collaboration and code review
+- Troubleshooting and debugging
+
+### Challenges
+
+- Loss of resources
+- Questioned a pre-existing database structure
+- Continuous deployment and continuous integration setup through heroku and github
+- Integrating a React frontend with express router
+- How to get the token set in the browser
