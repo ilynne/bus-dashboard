@@ -14,28 +14,28 @@ The application is currently deployed to https://whispering-caverns-88263.heroku
 
 ### Create an account and login
 
-(wireframes/SingupAndLogin.jpg)
+![Signup and Login](wireframes/SignupAndLogin.jpg)
 
 Use the sign up function to create your account. The database prevents duplicate accounts.
 
 Afterwards, use the login function to log into your account. You will receive a token and see the following landing page:
-(wireframes/Setup1.jpg)
+(![Landing Page]wireframes/Setup1.jpg)
 
 ### Creating a Group of Stops and Buses
 
-(wireframes/Setup2.jpg)
+![Group Setup](wireframes/Setup2.jpg)
 
 Create groups of stops and buses through the admin tab by given your group a name. Then assign a bus and the desired stops. Reload the page to see the new group under the header.
 
 ### Viewing a Group of Stops and Buses
 
-(wireframes/dashboard.jpg)
+![Dashboard](wireframes/dashboard.jpg)
 
 Groups will be displayed under the header. Click on a group to display its related stops and buses. OBA will supply the real time data.
 
 ### Deleting a Group or Stop
 
-(wireframes/Delete.jpg)
+![Administration](wireframes/Delete.jpg)
 
 Use the admin page to delete individual stops or whole groups. You can also add additional buses or stops to existing groups.
 
