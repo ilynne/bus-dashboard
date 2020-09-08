@@ -9,22 +9,11 @@ export default class GroupPreviewList extends React.PureComponent {
     stops: []
   }
 
-  // componentDidMount() {
-  //   this.getStops();
-  // }
-
-  // componentWillUnmount() {
-  //   if (this.unsubscribe) {
-  //     this.unsubscribe();
-  //   }
-  // }
-
   componentDidMount() {
     this.getStopsForGroup();
   }
 
   getStopsForGroup = () => {
-    console.log('GroupPreviewList getStopsForGroup')
     const token = localStorage.getItem('busDashboard::token');
     const { selectedGroupId } = this.props;
     const data = {
@@ -37,40 +26,19 @@ export default class GroupPreviewList extends React.PureComponent {
       params: data
     })
       .then(res => {
-        console.log(res)
         this.setState({ stops: res.data })
       })
   }
 
-
-
-  getStops = () => {
-    // const uid = firebase.auth().currentUser.uid;
-    // if (!this.props.selectedGroupId) {
-    //   return
-    // }
-    // this.unsubscribe = db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .doc(this.props.selectedGroupId)
-    //   .collection('stops')
-    //   .onSnapshot(snapshot => {
-    //     this.setState({ stops: snapshot.docs });
-    //   });
-  }
-
-  removeStop = (stopId) => {
-    // const uid = firebase.auth().currentUser.uid;
-    // const { selectedGroupId } = this.props;
-    // db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .doc(selectedGroupId)
-    //   .collection('stops')
-    //   .doc(stopId)
-    //   .delete();
+  removeStop = (e) => {
+    const token = localStorage.getItem('busDashboard::token');
+    const { recordId } = e.target.dataset
+    axios.delete(`/stops/${recordId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(() => { this.getStopsForGroup() })
   }
 
   busesByStop = () => {
@@ -79,7 +47,6 @@ export default class GroupPreviewList extends React.PureComponent {
 
   render() {
     const busesByStop = this.busesByStop();
-    console.log(busesByStop)
 
     return (
       <div className="group-preview">

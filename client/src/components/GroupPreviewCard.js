@@ -14,21 +14,13 @@ export default class GroupPreviewCard extends React.Component {
 
   fetchArrivalsForStop = function () {
     const { stopId } = this.props;
-
-    // fetch(`/api/v1/stops/${stopId}/arrivals`)
-    //   .then(res => res.json())
-    //   .then((response) => { this.setArrivalsForStop(response.data) })
-    //   .catch((error) => { console.log("Error while fetching test datas", error); })
     const token = localStorage.getItem('busDashboard::token')
-    console.log(token)
-    console.log(stopId)
     axios.get(`/oba/stops/${stopId}/arrivals`, {
       headers: {
         Authorization: 'Bearer ' + token
       }
     })
       .then(res => {
-        console.log(res.data);
         this.setArrivalsForStop(res.data)
 
       })
@@ -57,22 +49,17 @@ export default class GroupPreviewCard extends React.Component {
 
   busRouteShortName = (busRouteId) => {
     const { routesForAgency } = this.props;
-    console.log('busRouteShortName, busRouteId', busRouteId, routesForAgency)
     if (!routesForAgency || routesForAgency.length < 1) {
-      console.log('routesForAgency not populated')
       return
     }
-    // const route = routesForAgency.find(routeForAgency => { return busRouteId === routeForAgency.id })
     const route = routesForAgency.find(routeForAgency => { return routeForAgency.id === busRouteId })
-    // const route = routesForAgency[0];
-    console.log(route)
     const shortName = route ? route.shortName : 'not found'
     return shortName
   }
 
   handleDeleteClick = (e) => {
-    console.log('delete')
-    // this.props.handleDeleteClick(e.target.dataset.id)
+    e.preventDefault();
+    this.props.handleDeleteClick(e)
   }
 
   render() {
@@ -82,13 +69,14 @@ export default class GroupPreviewCard extends React.Component {
       <div className={'group-preview-card'}>
         <h2>{stopLabel}</h2>
         { this.props.busRouteIds.map(busRouteId => (
-          <p key={busRouteId.stopId}>
+          <p key={busRouteId._id}>
             {this.busRouteShortName(busRouteId.busId)}
             &nbsp;
             <span
               className={'clickable delete-link'}
               data-id={busRouteId.stopId}
               onClick={this.handleDeleteClick}
+              data-record-id={busRouteId._id}
             >
               &nbsp;
               delete

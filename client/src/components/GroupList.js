@@ -29,14 +29,12 @@ export default class GroupList extends React.Component {
 
   getGroups = () => {
     const token = localStorage.getItem('busDashboard::token')
-    console.log(token)
     axios.get('/groups', {
       headers: {
         Authorization: 'Bearer ' + token
       }
     })
       .then(res => {
-        console.log(res, res.data);
         this.setState({
           groups: res.data
         })
@@ -58,7 +56,6 @@ export default class GroupList extends React.Component {
   }
 
   removeGroup = (e) => {
-    console.log(e.target.dataset.id);
     const token = localStorage.getItem('busDashboard::token');
     const { id } = e.target.dataset
     axios.delete(`/groups/${id}`, {
