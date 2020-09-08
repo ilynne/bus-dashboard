@@ -44,33 +44,51 @@ export default class GroupPreviewList extends React.PureComponent {
 
 
 
-  getStops = () => {
-    // const uid = firebase.auth().currentUser.uid;
-    // if (!this.props.selectedGroupId) {
-    //   return
-    // }
-    // this.unsubscribe = db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .doc(this.props.selectedGroupId)
-    //   .collection('stops')
-    //   .onSnapshot(snapshot => {
-    //     this.setState({ stops: snapshot.docs });
-    //   });
-  }
+  // getStops = () => {
+  //   // const uid = firebase.auth().currentUser.uid;
+  //   // if (!this.props.selectedGroupId) {
+  //   //   return
+  //   // }
+  //   // this.unsubscribe = db
+  //   //   .collection('users')
+  //   //   .doc(uid)
+  //   //   .collection('groups')
+  //   //   .doc(this.props.selectedGroupId)
+  //   //   .collection('stops')
+  //   //   .onSnapshot(snapshot => {
+  //   //     this.setState({ stops: snapshot.docs });
+  //   //   });
+  // }
 
-  removeStop = (stopId) => {
-    // const uid = firebase.auth().currentUser.uid;
+  // removeStop = (stopId) => {
+  //   console.log('removeStop', id)
+
+  //   // const uid = firebase.auth().currentUser.uid;
+  //   // const { selectedGroupId } = this.props;
+  //   // db
+  //   //   .collection('users')
+  //   //   .doc(uid)
+  //   //   .collection('groups')
+  //   //   .doc(selectedGroupId)
+  //   //   .collection('stops')
+  //   //   .doc(stopId)
+  //   //   .delete();
+  // }
+
+  removeStop = (e) => {
+    console.log('removeStop', e)
+    const token = localStorage.getItem('busDashboard::token');
+    const { recordId } = e.target.dataset
     // const { selectedGroupId } = this.props;
-    // db
-    //   .collection('users')
-    //   .doc(uid)
-    //   .collection('groups')
-    //   .doc(selectedGroupId)
-    //   .collection('stops')
-    //   .doc(stopId)
-    //   .delete();
+    axios.delete(`/stops/${recordId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        console.log(res)
+      })
+      .then(() => { this.getStopsForGroup() })
   }
 
   busesByStop = () => {

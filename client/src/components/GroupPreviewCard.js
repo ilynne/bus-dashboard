@@ -71,8 +71,9 @@ export default class GroupPreviewCard extends React.Component {
   }
 
   handleDeleteClick = (e) => {
-    console.log('delete')
-    // this.props.handleDeleteClick(e.target.dataset.id)
+    e.preventDefault();
+    console.log('delete', e)
+    this.props.handleDeleteClick(e)
   }
 
   render() {
@@ -82,13 +83,14 @@ export default class GroupPreviewCard extends React.Component {
       <div className={'group-preview-card'}>
         <h2>{stopLabel}</h2>
         { this.props.busRouteIds.map(busRouteId => (
-          <p key={busRouteId.stopId}>
+          <p key={busRouteId._id}>
             {this.busRouteShortName(busRouteId.busId)}
             &nbsp;
             <span
               className={'clickable delete-link'}
               data-id={busRouteId.stopId}
               onClick={this.handleDeleteClick}
+              data-record-id={busRouteId._id}
             >
               &nbsp;
               delete
