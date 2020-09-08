@@ -173,6 +173,23 @@ td.time-column {
   text-align: right;;
 }
 
+.signin-container {
+  text-align: center;
+}
+
+.signin-form-container {
+  margin: 0 auto;
+  max-width: 75%;
+  >form >input {
+    font-size: x-large;
+    margin: 0.5em;
+  }
+}
+
+.sign-up-form {
+  border-bottom: 1px solid #ccc;
+}
+
 @media screen and (max-width: 767px) {
   .header {
     display: grid;
@@ -214,5 +231,13 @@ td.time-column {
     border-left: none;
     border-right: none;
     margin: 6px 0;
+  }
+
+  .signin-form-container {
+    >form >input {
+      font-size: medium;
+      margin: 0.5em;
+      display: block;
+    }
   }
 }
