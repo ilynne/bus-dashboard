@@ -4,28 +4,36 @@ import axios from 'axios';
 
 export default class GroupList extends React.Component {
   state = {
-    newGroupName: '',
+    name: '',
+    origin: '',
+    destination: '',
     groups: []
   }
 
-  handleGroupChange = (e) => {
+  handleGroupInputChange = (e) => {
     this.setState({
-      newGroupName: e.target.value
+      [e.target.name]: e.target.value
     })
   }
 
   handleGroupClick = (e) => {
     e.preventDefault();
-    this.props.handleGroupClick(e.target.dataset.id);
+    const { id, name, origin, destination } = e.target.dataset
+    this.setState({
+      name: name,
+      origin: origin || '',
+      destination: destination || ''
+    })
+    this.props.handleGroupClick(id);
   }
 
-  handleGroupBlur = (e) => {
-    if (this.state.newGroupName === '') {
-      return
-    } else {
-      this.addGroup();
-    }
-  }
+  // handleGroupBlur = (e) => {
+  //   // if (this.state.newGroupName === '') {
+  //   //   return
+  //   // } else {
+  //   //   this.addGroup();
+  //   // }
+  // }
 
   getGroups = () => {
     const token = localStorage.getItem('busDashboard::token')
@@ -41,18 +49,41 @@ export default class GroupList extends React.Component {
       })
   }
 
-  addGroup = (groupName) => {
+  addGroup = (e) => {
+    e.preventDefault();
     const token = localStorage.getItem('busDashboard::token');
-    const data = { name: this.state.newGroupName }
+    const data = { name: this.state.name,
+      origin: this.state.origin,
+      destination: this.state.destination
+    }
     axios.post('/groups', data, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
       .then(res => {
-        this.props.handleGroupClick(res.data._id)
+        this.props.handleGroupClick(res.data._id) //lift state
       })
       .then(() => { this.getGroups() })
+  }
+
+  updateGroup = (e) => {
+    e.preventDefault();
+    const { selectedGroupId } = this.props;
+    const token = localStorage.getItem('busDashboard::token');
+    const data = {
+      name: this.state.name,
+      origin: this.state.origin,
+      destination: this.state.destination
+    }
+    axios.put(`/groups/${selectedGroupId}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        console.log(res)
+      })
   }
 
   removeGroup = (e) => {
@@ -80,7 +111,10 @@ export default class GroupList extends React.Component {
                 className={this.props.selectedGroupId === group._id ? 'selected' : null}
                 onClick={this.handleGroupClick}
                 key={group._id}
-                data-id={group._id}>
+                data-id={group._id}
+                data-name={group.name}
+                data-origin={group.origin}
+                data-destination={group.destination}>
                   {group.name}
                   &nbsp;
                   <span
@@ -96,11 +130,36 @@ export default class GroupList extends React.Component {
           </ul>
           <input
             type={'text'}
-            id={'group-name'}
-            name={'group-name'}
-            onChange={this.handleGroupChange}
-            onBlur={this.handleGroupBlur}
+            id={'name'}
+            name={'name'}
+            onChange={this.handleGroupInputChange}
+            placeholder={'name'}
+            value={this.state.name}
           >
+          </input>
+          <input
+            type={'text'}
+            id={'origin'}
+            name={'origin'}
+            onChange={this.handleGroupInputChange}
+            placeholder={'origin'}
+            value={this.state.origin}
+          >
+          </input>
+          <input
+            type={'text'}
+            id={'destination'}
+            name={'destination'}
+            onChange={this.handleGroupInputChange}
+            placeholder={'destination'}
+            value={this.state.destination}
+          >
+          </input>
+          <input
+            type={'submit'}
+            onClick={this.props.selectedGroupId === '' ? this.addGroup : this.updateGroup}
+            value={this.props.selectedGroupId === '' ? 'Add' : 'Update'}
+            >
           </input>
         </div>
     );
