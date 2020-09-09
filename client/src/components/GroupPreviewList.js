@@ -5,30 +5,30 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 
 export default class GroupPreviewList extends React.PureComponent {
-  state = {
-    stops: []
-  }
+  // state = {
+  //   stops: []
+  // }
 
-  componentDidMount() {
-    this.getStopsForGroup();
-  }
+  // componentDidMount() {
+  //   this.getStopsForGroup();
+  // }
 
-  getStopsForGroup = () => {
-    const token = localStorage.getItem('busDashboard::token');
-    const { selectedGroupId } = this.props;
-    const data = {
-      groupId: selectedGroupId
-    }
-    axios.get('/stops', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      params: data
-    })
-      .then(res => {
-        this.setState({ stops: res.data })
-      })
-  }
+  // getStopsForGroup = () => {
+  //   const token = localStorage.getItem('busDashboard::token');
+  //   const { selectedGroupId } = this.props;
+  //   const data = {
+  //     groupId: selectedGroupId
+  //   }
+  //   axios.get('/stops', {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`
+  //     },
+  //     params: data
+  //   })
+  //     .then(res => {
+  //       this.setState({ stops: res.data })
+  //     })
+  // }
 
   removeStop = (e) => {
     const token = localStorage.getItem('busDashboard::token');
@@ -42,7 +42,7 @@ export default class GroupPreviewList extends React.PureComponent {
   }
 
   busesByStop = () => {
-    return _.groupBy(this.state.stops, (stop) => ( stop.stopId ))
+    return _.groupBy(this.props.stopsForGroup, (stop) => ( stop.stopId ))
   }
 
   render() {
@@ -67,5 +67,6 @@ export default class GroupPreviewList extends React.PureComponent {
 
 GroupPreviewList.propTypes = {
   selectedGroupId: PropTypes.string.isRequired,
-  routesForAgency: PropTypes.arrayOf(PropTypes.object).isRequired
+  routesForAgency: PropTypes.arrayOf(PropTypes.object).isRequired,
+  stopsForGroup: PropTypes.arrayOf(PropTypes.object).isRequired
 }

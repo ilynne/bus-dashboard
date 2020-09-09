@@ -16,7 +16,7 @@ export default class GroupList extends React.Component {
     })
   }
 
-  handleGroupClick = (e) => {
+  handleGroupSelect = (e) => {
     e.preventDefault();
     const { id, name, origin, destination } = e.target.dataset
     this.setState({
@@ -27,6 +27,16 @@ export default class GroupList extends React.Component {
     this.props.handleGroupClick(id);
   }
 
+  handleGroupDeselect = (e) => {
+    e.preventDefault();
+    this.setState({
+      name: '',
+      origin: '',
+      destination: ''
+    })
+    this.props.handleGroupClick('');
+  }
+
   // handleGroupBlur = (e) => {
   //   // if (this.state.newGroupName === '') {
   //   //   return
@@ -35,19 +45,23 @@ export default class GroupList extends React.Component {
   //   // }
   // }
 
-  getGroups = () => {
-    const token = localStorage.getItem('busDashboard::token')
-    axios.get('/groups', {
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    })
-      .then(res => {
-        this.setState({
-          groups: res.data
-        })
-      })
-  }
+  // getGroups = () => {
+  //   const token = localStorage.getItem('busDashboard::token')
+  //   axios.get('/groups', {
+  //     headers: {
+  //       Authorization: 'Bearer ' + token
+  //     }
+  //   })
+  //     .then(res => {
+  //       this.setState({
+  //         groups: res.data
+  //       })
+  //     })
+  // }
+
+  // getGroups = () => {
+  //   console.log('get groups now')
+  // }
 
   addGroup = (e) => {
     e.preventDefault();
@@ -64,7 +78,7 @@ export default class GroupList extends React.Component {
       .then(res => {
         this.props.handleGroupClick(res.data._id) //lift state
       })
-      .then(() => { this.getGroups() })
+      .then(() => { this.props.getGroups() })
   }
 
   updateGroup = (e) => {
@@ -94,22 +108,22 @@ export default class GroupList extends React.Component {
         Authorization: 'Bearer ' + token
       }
     })
-      .then(() => this.getGroups())
+      .then(() => this.props.getGroups())
   }
 
-  componentDidMount() {
-    this.getGroups();
-  }
+  // componentDidMount() {
+  //   this.getGroups();
+  // }
 
   render() {
     return (
       <div>
           <p>Group</p>
           <ul>
-            { this.state.groups.map((group) => (
+            { this.props.groups.map((group) => (
               <li
                 className={this.props.selectedGroupId === group._id ? 'selected' : null}
-                onClick={this.handleGroupClick}
+                onClick={this.props.selectedGroupId === group._id ? this.handleGroupDeselect : this.handleGroupSelect}
                 key={group._id}
                 data-id={group._id}
                 data-name={group.name}
@@ -170,4 +184,6 @@ export default class GroupList extends React.Component {
 GroupList.propTypes = {
   handleGroupClick: PropTypes.func.isRequired,
   selectedGroupId: PropTypes.string.isRequired,
+  getGroups: PropTypes.func.isRequired,
+  groups: PropTypes.arrayOf(PropTypes.object).isRequired
 }

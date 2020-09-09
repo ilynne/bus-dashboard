@@ -15,7 +15,9 @@ export default class AddBus extends React.Component {
       routesForAgency: [],
       stopsByBusRouteId: {},
       directionIndex: -1,
-      selectedGroupId: ''
+      selectedGroupId: '',
+      groups: [],
+      stopsForGroup: [],
     }
     this.handleBusNumberChange = this.handleBusNumberChange.bind(this);
     this.fetchRoutesForAgency = this.fetchRoutesForAgency.bind(this);
@@ -26,6 +28,7 @@ export default class AddBus extends React.Component {
 
   componentDidMount = () => {
     this.fetchRoutesForAgency();
+    this.getGroups();
   }
 
   fetchRoutesForAgency = function () {
@@ -52,6 +55,43 @@ export default class AddBus extends React.Component {
       .then(res => {
         this.setStopsByBusRouteId(res.data)
 
+      })
+  }
+
+  getGroups = () => {
+    const token = localStorage.getItem('busDashboard::token')
+    axios.get('/groups', {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    })
+      .then(res => {
+        this.setState({
+          groups: res.data
+        })
+      })
+  }
+
+  getStopsForGroup = () => {
+    console.log('getStopsForGroup', this.state)
+    const { selectedGroupId } = this.state;
+    if (selectedGroupId === '') {
+      console.log(selectedGroupId, 'blank')
+      console.log('is blank')
+      return
+    }
+    const token = localStorage.getItem('busDashboard::token');
+    const data = {
+      groupId: selectedGroupId
+    }
+    axios.get('/stops', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: data
+    })
+      .then(res => {
+        this.setState((this.state, { stopsForGroup: res.data }))
       })
   }
 
@@ -84,12 +124,14 @@ export default class AddBus extends React.Component {
   }
 
   handleGroupClick(groupId) {
-    this.setState({
+    console.log(groupId);
+    const newState = {
       selectedGroupId: groupId,
       busNumber: '',
       busRouteId: '',
       directionIndex: -1
-    });
+    }
+    this.setState((this.state, newState), () => this.getStopsForGroup());
   }
 
   handleDirectionClick(index) {
@@ -143,6 +185,8 @@ export default class AddBus extends React.Component {
             <GroupList
               handleGroupClick={this.handleGroupClick}
               selectedGroupId={this.state.selectedGroupId}
+              groups={this.state.groups}
+              getGroups={this.getGroups}
             >
             </GroupList>
 
@@ -177,7 +221,9 @@ export default class AddBus extends React.Component {
         { this.state.selectedGroupId !== ''
           ? <GroupPreviewList
               selectedGroupId={this.state.selectedGroupId}
-              routesForAgency={this.state.routesForAgency}>
+              routesForAgency={this.state.routesForAgency}
+              groups={this.state.groups}
+              stopsForGroup={this.state.stopsForGroup}>
             </GroupPreviewList>
           : null
         }
