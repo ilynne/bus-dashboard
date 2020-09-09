@@ -77,7 +77,7 @@ export default class AddBus extends React.Component {
     const { selectedGroupId } = this.state;
     if (selectedGroupId === '') {
       console.log(selectedGroupId, 'blank')
-      console.log('is blank')
+      this.setState((this.state, { stopsForGroup: [] }))
       return
     }
     const token = localStorage.getItem('busDashboard::token');
@@ -91,6 +91,7 @@ export default class AddBus extends React.Component {
       params: data
     })
       .then(res => {
+        console.log(res.data)
         this.setState((this.state, { stopsForGroup: res.data }))
       })
   }
@@ -172,6 +173,70 @@ export default class AddBus extends React.Component {
     }
   }
 
+  addStop = (e) => {
+    console.log('addStop')
+    const token = localStorage.getItem('busDashboard::token');
+    const { id } = e.target.dataset
+    const { selectedGroupId, busRouteId } = this.state;
+    const data = {
+      stopId: id,
+      groupId: selectedGroupId,
+      busId: busRouteId,
+    }
+    axios.post('/stops', data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        console.log(res)
+      })
+      .then(() => { this.getStopsForGroup() })
+  }
+
+  removeStop = (e) => {
+    console.log('removeStop')
+    const token = localStorage.getItem('busDashboard::token');
+    const { recordId } = e.target.dataset
+    axios.delete(`/stops/${recordId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => {
+        console.log(res)
+      })
+      .then(() => { this.getStopsForGroup() })
+  }
+
+
+
+  // getStopsForGroup = () => {
+  //   console.log('getStopsForGroup')
+  //   const token = localStorage.getItem('busDashboard::token');
+  //   const { selectedGroupId } = this.state;
+  //   const data = {
+  //     groupId: selectedGroupId
+  //   }
+  //   axios.get('/stops', {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`
+  //     },
+  //     params: data
+  //   })
+  //     .then(res => {
+  //       console.log(res)
+  //       this.setGroupStops(res.data)
+  //     })
+  // }
+
+  // setGroupStops = (data) => {
+  //   const groupStopsForBus = data.filter(stop => { return stop.busId === this.props.busRouteId } )
+  //   this.setState({
+  //     groupStops: groupStopsForBus
+  //   })
+  // }
+
   render() {
     const stopGroups = this.stopGroups();
     const stopsForDirection = this.stopsForDirection();
@@ -212,7 +277,10 @@ export default class AddBus extends React.Component {
               ? <StopList
                   busRouteId={this.state.busRouteId}
                   selectedGroupId={this.state.selectedGroupId}
+                  stopsForGroup={this.state.stopsForGroup}
                   stopsForDirection={stopsForDirection}
+                  addStop={this.addStop}
+                  removeStop={this.removeStop}
                 >
                 </StopList>
               : null
