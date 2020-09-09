@@ -5,6 +5,7 @@ import GroupList from './GroupList';
 import GroupPreviewList from './GroupPreviewList';
 import BusInput from './BusInput';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 export default class AddBus extends React.Component {
   constructor(props) {
@@ -28,7 +29,6 @@ export default class AddBus extends React.Component {
 
   componentDidMount = () => {
     this.fetchRoutesForAgency();
-    this.getGroups();
   }
 
   fetchRoutesForAgency = function () {
@@ -125,7 +125,6 @@ export default class AddBus extends React.Component {
   }
 
   handleGroupClick(groupId) {
-    console.log(groupId);
     const newState = {
       selectedGroupId: groupId,
       busNumber: '',
@@ -209,34 +208,6 @@ export default class AddBus extends React.Component {
       .then(() => { this.getStopsForGroup() })
   }
 
-
-
-  // getStopsForGroup = () => {
-  //   console.log('getStopsForGroup')
-  //   const token = localStorage.getItem('busDashboard::token');
-  //   const { selectedGroupId } = this.state;
-  //   const data = {
-  //     groupId: selectedGroupId
-  //   }
-  //   axios.get('/stops', {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`
-  //     },
-  //     params: data
-  //   })
-  //     .then(res => {
-  //       console.log(res)
-  //       this.setGroupStops(res.data)
-  //     })
-  // }
-
-  // setGroupStops = (data) => {
-  //   const groupStopsForBus = data.filter(stop => { return stop.busId === this.props.busRouteId } )
-  //   this.setState({
-  //     groupStops: groupStopsForBus
-  //   })
-  // }
-
   render() {
     const stopGroups = this.stopGroups();
     const stopsForDirection = this.stopsForDirection();
@@ -250,8 +221,8 @@ export default class AddBus extends React.Component {
             <GroupList
               handleGroupClick={this.handleGroupClick}
               selectedGroupId={this.state.selectedGroupId}
-              groups={this.state.groups}
-              getGroups={this.getGroups}
+              groups={this.props.groups}
+              getGroups={this.props.getGroups}
             >
             </GroupList>
 
@@ -290,7 +261,7 @@ export default class AddBus extends React.Component {
           ? <GroupPreviewList
               selectedGroupId={this.state.selectedGroupId}
               routesForAgency={this.state.routesForAgency}
-              groups={this.state.groups}
+              groups={this.props.groups}
               stopsForGroup={this.state.stopsForGroup}
               removeStop={this.removeStop}>
             </GroupPreviewList>
@@ -299,4 +270,10 @@ export default class AddBus extends React.Component {
       </div>
     )
   }
+}
+
+AddBus.propTypes = {
+  selectedGroupId: PropTypes.string.isRequired,
+  groups: PropTypes.arrayOf(PropTypes.object).isRequired,
+  getGroups: PropTypes.func.isRequired,
 }

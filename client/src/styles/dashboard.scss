@@ -176,6 +176,10 @@ td.time-column {
   text-align: right;;
 }
 
+.hidden {
+  display: none;
+}
+
 @media screen and (max-width: 767px) {
   .header {
     display: grid;

@@ -18,50 +18,24 @@ export default class GroupList extends React.Component {
 
   handleGroupSelect = (e) => {
     e.preventDefault();
-    const { id, name, origin, destination } = e.target.dataset
-    this.setState({
-      name: name,
-      origin: origin || '',
-      destination: destination || ''
-    })
+    const { id } = e.target.dataset
+    const selectedGroup = this.props.groups.find(group => group._id === id) || {}
+    if (selectedGroup.name !== '') {
+      this.setState((this.state, {
+        name: selectedGroup.name,
+        origin: selectedGroup.origin,
+        destination: selectedGroup.destination
+      }))
+    }
     this.props.handleGroupClick(id);
   }
 
   handleGroupDeselect = (e) => {
     e.preventDefault();
-    this.setState({
-      name: '',
-      origin: '',
-      destination: ''
-    })
+    this.setState((this.state, { name: '', origin: '', destination: '' }))
     this.props.handleGroupClick('');
   }
 
-  // handleGroupBlur = (e) => {
-  //   // if (this.state.newGroupName === '') {
-  //   //   return
-  //   // } else {
-  //   //   this.addGroup();
-  //   // }
-  // }
-
-  // getGroups = () => {
-  //   const token = localStorage.getItem('busDashboard::token')
-  //   axios.get('/groups', {
-  //     headers: {
-  //       Authorization: 'Bearer ' + token
-  //     }
-  //   })
-  //     .then(res => {
-  //       this.setState({
-  //         groups: res.data
-  //       })
-  //     })
-  // }
-
-  // getGroups = () => {
-  //   console.log('get groups now')
-  // }
 
   addGroup = (e) => {
     e.preventDefault();
@@ -97,10 +71,12 @@ export default class GroupList extends React.Component {
     })
       .then(res => {
         console.log(res)
+        this.props.getGroups();
       })
   }
 
   removeGroup = (e) => {
+    e.preventDefault();
     const token = localStorage.getItem('busDashboard::token');
     const { id } = e.target.dataset
     axios.delete(`/groups/${id}`, {
@@ -110,10 +86,6 @@ export default class GroupList extends React.Component {
     })
       .then(() => this.props.getGroups())
   }
-
-  // componentDidMount() {
-  //   this.getGroups();
-  // }
 
   render() {
     return (
@@ -125,14 +97,11 @@ export default class GroupList extends React.Component {
                 className={this.props.selectedGroupId === group._id ? 'selected' : null}
                 onClick={this.props.selectedGroupId === group._id ? this.handleGroupDeselect : this.handleGroupSelect}
                 key={group._id}
-                data-id={group._id}
-                data-name={group.name}
-                data-origin={group.origin}
-                data-destination={group.destination}>
+                data-id={group._id}>
                   {group.name}
-                  &nbsp;
+                  &nbsp;&nbsp;
                   <span
-                    className={'clickable delete-link'}
+                    className={this.props.selectedGroupId === group._id ? 'clickable delete-link' : 'hidden'}
                     data-id={group._id}
                     onClick={this.removeGroup}
                   >
@@ -148,7 +117,7 @@ export default class GroupList extends React.Component {
             name={'name'}
             onChange={this.handleGroupInputChange}
             placeholder={'name'}
-            value={this.state.name}
+            value={this.state.name || ''}
           >
           </input>
           <input
@@ -157,7 +126,7 @@ export default class GroupList extends React.Component {
             name={'origin'}
             onChange={this.handleGroupInputChange}
             placeholder={'origin'}
-            value={this.state.origin}
+            value={this.state.origin || ''}
           >
           </input>
           <input
@@ -166,7 +135,7 @@ export default class GroupList extends React.Component {
             name={'destination'}
             onChange={this.handleGroupInputChange}
             placeholder={'destination'}
-            value={this.state.destination}
+            value={this.state.destination || ''}
           >
           </input>
           <input

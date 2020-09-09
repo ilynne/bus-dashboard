@@ -3,6 +3,7 @@ import LoginSignup from './LoginSignup';
 import Header from './Header';
 import Dashboard from './Dashboard';
 import Navigation from './Navigation';
+import axios from 'axios';
 
 export default class Home extends React.Component {
   state = {
@@ -12,7 +13,8 @@ export default class Home extends React.Component {
     token: '',
     isSignedIn: false,
     selectedGroupId: '',
-    admin: false
+    admin: false,
+    groups: []
   }
 
   componentDidMount = () => {
@@ -60,10 +62,29 @@ export default class Home extends React.Component {
         token: token
       },
       isSignedIn: token.length > 0
+    }, () => this.getGroups())
+  }
+
+  getGroups = () => {
+    console.log('getGroups', this.state.selectedGroupId)
+    if (!this.state.isSignedIn) {
+      return
+    }
+    const token = localStorage.getItem('busDashboard::token')
+    axios.get('/groups', {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
     })
+      .then(res => {
+        this.setState((this.state, {
+          groups: res.data
+        }))
+      })
   }
 
   handleGroupClick = (tabId) => {
+    console.log('handleGroupClick', tabId)
     if (tabId === 'admin') {
       this.setState({
         admin: true,
@@ -90,12 +111,15 @@ export default class Home extends React.Component {
           signOut={this.logoutUser}
           handleGroupClick={this.handleGroupClick}
           admin={this.state.admin}
-          selectedGroupId={this.state.selectedGroupId}>
+          selectedGroupId={this.state.selectedGroupId}
+          groups={this.state.groups}>
         </Navigation>
         { this.state.isSignedIn
           ? <Dashboard
               admin={this.state.admin}
               selectedGroupId={this.state.selectedGroupId}
+              groups={this.state.groups}
+              getGroups={this.getGroups}
             >
             </Dashboard>
           : <LoginSignup
