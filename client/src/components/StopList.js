@@ -1,83 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 
 export default class StopList extends React.Component {
-  // state = {
-  //   groupStops: []
-  // }
-
-  // handleStopClick = (e) => {
-  //   this.addStop(e.target.dataset.id)
-  // }
-
-  // need to lift groupStops to AddBus
-  // componentDidMount() {
-  //   this.setGroupStops();
-  // }
-
-  // getStopsForGroup = () => {
-  //   console.log('getStopsForGroup')
-  //   const token = localStorage.getItem('busDashboard::token');
-  //   const { selectedGroupId } = this.props;
-  //   const data = {
-  //     groupId: selectedGroupId
-  //   }
-  //   axios.get('/stops', {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`
-  //     },
-  //     params: data
-  //   })
-  //     .then(res => {
-  //       console.log(res)
-  //       this.setGroupStops(res.data)
-  //     })
-  // }
-
-  // setGroupStops = () => {
-  //   console.log('setGroupStops')
-  //   const groupStopsForBus = this.props.stopsForGroup.filter(stop => { return stop.busId === this.props.busRouteId } )
-  //   this.setState({
-  //     groupStops: groupStopsForBus
-  //   })
-  // }
-
-  // addStop = (e) => {
-  //   console.log('addStop')
-  //   const token = localStorage.getItem('busDashboard::token');
-  //   const { id } = e.target.dataset
-  //   const { selectedGroupId, busRouteId } = this.props;
-  //   const data = {
-  //     stopId: id,
-  //     groupId: selectedGroupId,
-  //     busId: busRouteId,
-  //   }
-  //   axios.post('/stops', data, {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`
-  //     }
-  //   })
-  //     .then(res => {
-  //       console.log(res)
-  //     })
-  //     .then(() => { this.props.handleStopClick() })
-  // }
-
-  // removeStop = (e) => {
-  //   console.log('removeStop')
-  //   const token = localStorage.getItem('busDashboard::token');
-  //   const { recordId } = e.target.dataset
-  //   axios.delete(`/stops/${recordId}`, {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`
-  //     }
-  //   })
-  //     .then(res => {
-  //       console.log(res)
-  //     })
-  //     .then(() => { this.props.handleStopClick() })
-  // }
+  stopIdsForBusDirectionGroup = () => {
+    console.log('filter', this.props.stopsForDirection, this.props.busRouteId, this.props.stopsForGroup)
+    return this.props.stopsForGroup.filter(stop => { return stop.busId === this.props.busRouteId } ).map(stop => { return stop.stopId})
+  }
 
   groupStopsRecordId = (stopId) => {
     const stopData = this.props.stopsForGroup.find(stop => { return stop.stopId === stopId })
@@ -89,7 +17,7 @@ export default class StopList extends React.Component {
   }
 
   render() {
-    const groupStops = this.props.stopsForGroup.map(stop => ( stop.stopId ));
+    const stopIds = this.stopIdsForBusDirectionGroup();
 
     return (
       <div>
@@ -97,8 +25,8 @@ export default class StopList extends React.Component {
         <ul>
           { this.props.stopsForDirection.map((stop, i) => (
             <li
-              className={groupStops.includes(stop.id) ? 'selected' : null}
-              onClick={groupStops.includes(stop.id) ? this.props.removeStop : this.props.addStop}
+              className={stopIds.includes(stop.id) ? 'selected' : null}
+              onClick={stopIds.includes(stop.id) ? this.props.removeStop : this.props.addStop}
               key={`stop-${i}`}
               data-id={stop.id}
               data-record-id={this.groupStopsRecordId(stop.id)}>{stop.name}</li>
