@@ -291,7 +291,8 @@ export default class AddBus extends React.Component {
               selectedGroupId={this.state.selectedGroupId}
               routesForAgency={this.state.routesForAgency}
               groups={this.state.groups}
-              stopsForGroup={this.state.stopsForGroup}>
+              stopsForGroup={this.state.stopsForGroup}
+              removeStop={this.removeStop}>
             </GroupPreviewList>
           : null
         }
