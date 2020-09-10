@@ -37,41 +37,45 @@ module.exports.getByQuery = async (origin) => {
     }
 };
 
-module.exports.getByOrigin = async (origin) => {
-    try {
-        const originResults = await Group.find(
-            { $text: { $search: origin } },
-            { score: { $meta: "textScore" } }
-            ).sort({ score: { $meta: "textScore" } }).lean();
-        return originResults;
-    } catch (e) {
-        throw e;
-    }
-};
+// Lynne 10 September 2020
+// the methods below are commented out because they could be useful in the future
+// they were replaced by the method above to simplify searches for the
+// end user
+// module.exports.getByOrigin = async (origin) => {
+//     try {
+//         const originResults = await Group.find(
+//             { $text: { $search: origin } },
+//             { score: { $meta: "textScore" } }
+//             ).sort({ score: { $meta: "textScore" } }).lean();
+//         return originResults;
+//     } catch (e) {
+//         throw e;
+//     }
+// };
 
-module.exports.getByDestination = async (destination) => {
-    try {
-        const destinationResults = await Group.find(
-            { $text: { $search: destination } },
-            { score: { $meta: "textScore" } }
-            ).sort({ score: { $meta: "textScore" } }).lean();
-        return destinationResults;
-    } catch (e) {
-        throw e;
-    }
-};
+// module.exports.getByDestination = async (destination) => {
+//     try {
+//         const destinationResults = await Group.find(
+//             { $text: { $search: destination } },
+//             { score: { $meta: "textScore" } }
+//             ).sort({ score: { $meta: "textScore" } }).lean();
+//         return destinationResults;
+//     } catch (e) {
+//         throw e;
+//     }
+// };
 
-module.exports.getByOriginAndDestination = async (searchString) => {
-    try {
-        const searchResults = await Group.find(
-            { $text: { $search: searchString } },
-            { score: { $meta: "textScore" } }
-            ).sort({ score: { $meta: "textScore" } }).lean();
-        return searchResults;
-    } catch (e) {
-        throw e;
-    }
-};
+// module.exports.getByOriginAndDestination = async (searchString) => {
+//     try {
+//         const searchResults = await Group.find(
+//             { $text: { $search: searchString } },
+//             { score: { $meta: "textScore" } }
+//             ).sort({ score: { $meta: "textScore" } }).lean();
+//         return searchResults;
+//     } catch (e) {
+//         throw e;
+//     }
+// };
 
 module.exports.getByUserId = async (userId) => {
     try {

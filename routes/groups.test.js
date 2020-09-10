@@ -9,7 +9,7 @@ const Group = require('../models/group');
 describe("/groups", () => {
     beforeAll(testUtils.connectDB);
     afterAll(testUtils.stopDB);
-  
+
     afterEach(testUtils.clearDB);
 
     const group0 = { name: "group0", origin: "Seattle", destination: "Portland" };
@@ -160,22 +160,10 @@ describe("/groups", () => {
               expect(res.statusCode).toEqual(200);
               expect(res.body).toEqual(user1Groups)
             });
-            it("should return multiple matching groups sorted by best score, for origin query", async () => {
-              const searchTerm = 'Seattle'
+            it("should return multiple matching groups sorted by best score query", async () => {
+              const searchTerm = 'Boston';
               const res = await request(server)
-                .get("/groups?origin=" + encodeURI(searchTerm))
-                .set('Authorization', 'Bearer ' + token0)
-                .send();
-              expect(res.statusCode).toEqual(200);
-              expect(res.body).toMatchObject([
-                user0Groups[0],
-                user1Groups[0]
-              ]);
-            });
-            it("should return multiple matching groups sorted by best score, for destination query", async () => {
-              const searchTerm = 'Boston'
-              const res = await request(server)
-                .get("/groups?destination=" + encodeURI(searchTerm))
+                .get("/groups?query=" + encodeURI(searchTerm))
                 .set('Authorization', 'Bearer ' + token0)
                 .send();
               expect(res.statusCode).toEqual(200);
@@ -184,20 +172,40 @@ describe("/groups", () => {
                 user1Groups[1]
               ]);
             });
-            it("should return multiple matching groups sorted by best score, for origin & destination query", async () => {
-              const searchTerm0 = 'Boston';
-              const searchTerm1 = 'Seattle';
+            it("should return include stops when requested with query", async () => {
+              const searchTerm = 'Seattle';
+              const stop0Data = {
+                groupId: `${user0Groups[0]._id}`,
+                stopId: "1_00135",
+                busId: "1_000123"
+              };
+              const stop1Data = {
+                groupId: `${user0Groups[0]._id}`,
+                stopId: "1_00179",
+                busId: "1_000234"
+              };
+              const stop0 = await request(server)
+                .post("/stops")
+                .set('Authorization', 'Bearer ' + token0)
+                .send(stop0Data);
+              const stop1 = await request(server)
+                .post("/stops")
+                .set('Authorization', 'Bearer ' + token0)
+                .send(stop1Data);
+
+
               const res = await request(server)
-                .get("/groups?origin=" + encodeURI(searchTerm0) + "&destination=" + encodeURI(searchTerm1))
+                .get("/groups?query=" + encodeURI(searchTerm))
                 .set('Authorization', 'Bearer ' + token0)
                 .send();
+
               expect(res.statusCode).toEqual(200);
               expect(res.body).toMatchObject([
-                user0Groups[1],
-                user1Groups[1],
                 user0Groups[0],
                 user1Groups[0]
               ]);
+              expect(res.body[0].stops)
+                .toMatchObject([stop0.body, stop1.body])
             });
         });
         describe('GET /:id', () => {

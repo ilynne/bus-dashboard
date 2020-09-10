@@ -17,44 +17,6 @@ router.post("/",
     }
 );
 
-// router.get("/",
-//     isAuthorized,
-//     async (req, res, next) => {
-//         let { origin, destination } = req.query;
-//         if (origin && !destination) {
-//             console.log('origin and destination')
-//             const groups = await groupDAO.getByOrigin(origin);
-//             if (groups) {
-//                 res.json(groups);
-//             } else {
-//                 res.sendStatus(404);
-//             }
-//         } else if (destination && !origin) {
-//             const groups = await groupDAO.getByDestination(destination);
-//             if (groups) {
-//                 res.json(groups);
-//             } else {
-//                 res.sendStatus(404);
-//             }
-//         } else if (origin && destination) {
-//             const searchString = `${origin} ${destination}`;
-//             const groups = await groupDAO.getByOriginAndDestination(searchString);
-//             if (groups) {
-//                 res.json(groups);
-//             } else {
-//                 res.sendStatus(404);
-//             }
-//         } else {
-//             const groups = await groupDAO.getByUserId(req.userId);
-//             if (groups) {
-//                 res.json(groups);
-//             } else {
-//                 res.sendStatus(404);
-//             }
-//         }
-//     }
-// );
-
 router.get("/",
     isAuthorized,
     async (req, res, next) => {
