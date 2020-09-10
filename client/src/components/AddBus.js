@@ -205,9 +205,9 @@ export default class AddBus extends React.Component {
     return (
       <div className={'admin-container'}>
 
-      <Search
+        <Search
           routesForAgency={this.state.routesForAgency}>
-      </Search>
+        </Search>
 
         <div className={'admin'}>
           <form
