@@ -18,6 +18,25 @@ module.exports.create = async(userId, name, origin, destination, isDefault) => {
     }
 };
 
+module.exports.getByQuery = async (origin) => {
+    try {
+        const originResults = await Group.aggregate([
+            { "$match": { "$text": { "$search": origin } } },
+            { "$sort": { "score": { "$meta": "textScore" } } },
+            { "$lookup": {
+                "from": "stops",
+                "localField": "_id",
+                "foreignField": "groupId",
+                "as": "stops"
+            }
+        }
+        ]);
+        return originResults;
+    } catch (e) {
+        throw e;
+    }
+};
+
 module.exports.getByOrigin = async (origin) => {
     try {
         const originResults = await Group.find(
@@ -101,5 +120,5 @@ module.exports.deleteById = async (groupId) => {
         return true;
     } catch {
         return false;
-    }  
+    }
 }

@@ -4,6 +4,7 @@ import StopList from './StopList';
 import GroupList from './GroupList';
 import GroupPreviewList from './GroupPreviewList';
 import BusInput from './BusInput';
+import Search from './Search';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -213,60 +214,67 @@ export default class AddBus extends React.Component {
     const stopsForDirection = this.stopsForDirection();
 
     return (
-      <div className={'admin'}>
-        <form
-          className={'add-bus-form'}
-          onSubmit={this.handleFormSubmit}
-          method={'post'}>
-            <GroupList
-              handleGroupClick={this.handleGroupClick}
-              selectedGroupId={this.state.selectedGroupId}
-              groups={this.props.groups}
-              getGroups={this.props.getGroups}
-            >
-            </GroupList>
+      <div className={'admin-container'}>
 
-            { this.state.selectedGroupId !== ''
-              ? <BusInput
-                  busNumber={this.state.busNumber}
-                  handleBusNumberChange={this.handleBusNumberChange}>
-                </BusInput>
-              : this.state.selectedGroupId
-            }
+      <Search
+          routesForAgency={this.state.routesForAgency}>
+      </Search>
 
-            { stopGroups
-              ? <DirectionList
-                  stopGroups={stopGroups}
-                  handleDirectionClick={this.handleDirectionClick}
-                  directionIndex={this.state.directionIndex}
-                >
-                </DirectionList>
-              : null
-            }
+        <div className={'admin'}>
+          <form
+            className={'add-bus-form'}
+            onSubmit={this.handleFormSubmit}
+            method={'post'}>
+              <GroupList
+                handleGroupClick={this.handleGroupClick}
+                selectedGroupId={this.state.selectedGroupId}
+                groups={this.props.groups}
+                getGroups={this.props.getGroups}
+              >
+              </GroupList>
 
-            { stopsForDirection
-              ? <StopList
-                  busRouteId={this.state.busRouteId}
-                  selectedGroupId={this.state.selectedGroupId}
-                  stopsForGroup={this.state.stopsForGroup}
-                  stopsForDirection={stopsForDirection}
-                  addStop={this.addStop}
-                  removeStop={this.removeStop}
-                >
-                </StopList>
-              : null
-            }
-        </form>
-        { this.state.selectedGroupId !== ''
-          ? <GroupPreviewList
-              selectedGroupId={this.state.selectedGroupId}
-              routesForAgency={this.state.routesForAgency}
-              groups={this.props.groups}
-              stopsForGroup={this.state.stopsForGroup}
-              removeStop={this.removeStop}>
-            </GroupPreviewList>
-          : null
-        }
+              { this.state.selectedGroupId !== ''
+                ? <BusInput
+                    busNumber={this.state.busNumber}
+                    handleBusNumberChange={this.handleBusNumberChange}>
+                  </BusInput>
+                : this.state.selectedGroupId
+              }
+
+              { stopGroups
+                ? <DirectionList
+                    stopGroups={stopGroups}
+                    handleDirectionClick={this.handleDirectionClick}
+                    directionIndex={this.state.directionIndex}
+                  >
+                  </DirectionList>
+                : null
+              }
+
+              { stopsForDirection
+                ? <StopList
+                    busRouteId={this.state.busRouteId}
+                    selectedGroupId={this.state.selectedGroupId}
+                    stopsForGroup={this.state.stopsForGroup}
+                    stopsForDirection={stopsForDirection}
+                    addStop={this.addStop}
+                    removeStop={this.removeStop}
+                  >
+                  </StopList>
+                : null
+              }
+          </form>
+          { this.state.selectedGroupId !== ''
+            ? <GroupPreviewList
+                selectedGroupId={this.state.selectedGroupId}
+                routesForAgency={this.state.routesForAgency}
+                groups={this.props.groups}
+                stopsForGroup={this.state.stopsForGroup}
+                removeStop={this.removeStop}>
+              </GroupPreviewList>
+            : null
+          }
+        </div>
       </div>
     )
   }
