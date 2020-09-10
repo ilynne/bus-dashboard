@@ -1,29 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 
 export default class TabList extends React.Component {
-  state = {
-    groups: []
-  }
-  componentDidMount() {
-    this.getGroups();
-  }
-
-  getGroups = () => {
-    const token = localStorage.getItem('busDashboard::token')
-    axios.get('/groups', {
-      headers: {
-        Authorization: 'Bearer ' + token
-      }
-    })
-      .then(res => {
-        this.setState({
-          groups: res.data
-        })
-      })
-  }
-
 
   handleGroupClick = (e) => {
     this.props.handleGroupClick(e.target.dataset.id)
@@ -32,7 +10,7 @@ export default class TabList extends React.Component {
   render() {
     return (
       <div className="tabs">
-        { this.state.groups.map((group) => (
+        { this.props.groups.map((group) => (
           <div
             className={this.props.selectedGroupId === group._id ? 'selected' : null}
             onClick={this.handleGroupClick}
@@ -54,4 +32,5 @@ TabList.propTypes = {
   admin: PropTypes.bool.isRequired,
   selectedGroupId: PropTypes.string.isRequired,
   handleGroupClick: PropTypes.func.isRequired,
+  groups: PropTypes.arrayOf(PropTypes.object).isRequired
 }

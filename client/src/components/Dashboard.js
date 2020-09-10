@@ -8,7 +8,12 @@ export default class Dashboard extends React.Component {
     return (
       <div>
         { this.props.admin
-          ? <AddBus></AddBus>
+          ? <AddBus
+              groups={this.props.groups}
+              selectedGroupId={this.props.selectedGroupId}
+              getGroups={this.props.getGroups}
+            >
+            </AddBus>
           : null
         }
         { this.props.selectedGroupId !== ''
@@ -26,4 +31,6 @@ export default class Dashboard extends React.Component {
 Dashboard.propTypes = {
   admin: PropTypes.bool.isRequired,
   selectedGroupId: PropTypes.string.isRequired,
+  groups: PropTypes.arrayOf(PropTypes.object).isRequired,
+  getGroups: PropTypes.func.isRequired,
 }

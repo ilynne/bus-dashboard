@@ -15,6 +15,7 @@ export default class Navigation extends React.Component {
               admin={this.props.admin}
               selectedGroupId={this.props.selectedGroupId}
               handleGroupClick={this.props.handleGroupClick}
+              groups={this.props.groups}
             >
             </TabList>
           : null
@@ -30,4 +31,5 @@ Navigation.propTypes = {
   handleGroupClick: PropTypes.func.isRequired,
   admin: PropTypes.bool.isRequired,
   selectedGroupId: PropTypes.string.isRequired,
+  groups: PropTypes.arrayOf(PropTypes.object).isRequired
 }

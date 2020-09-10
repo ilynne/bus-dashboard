@@ -57,11 +57,6 @@ export default class GroupPreviewCard extends React.Component {
     return shortName
   }
 
-  handleDeleteClick = (e) => {
-    e.preventDefault();
-    this.props.handleDeleteClick(e)
-  }
-
   render() {
     const stopLabel = this.stopLabel();
 
@@ -73,9 +68,9 @@ export default class GroupPreviewCard extends React.Component {
             {this.busRouteShortName(busRouteId.busId)}
             &nbsp;
             <span
-              className={'clickable delete-link'}
+              className={this.props.removeStop ? 'clickable delete-link' : 'hidden'}
               data-id={busRouteId.stopId}
-              onClick={this.handleDeleteClick}
+              onClick={this.props.removeStop}
               data-record-id={busRouteId._id}
             >
               &nbsp;
@@ -92,5 +87,5 @@ GroupPreviewCard.propTypes = {
   stopId: PropTypes.string.isRequired,
   busRouteIds: PropTypes.arrayOf(PropTypes.object).isRequired,
   routesForAgency: PropTypes.arrayOf(PropTypes.object).isRequired,
-  handleDeleteClick: PropTypes.func.isRequired,
+  removeStop: PropTypes.func,
 }

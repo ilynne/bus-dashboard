@@ -44,14 +44,18 @@ export default class Arrivals extends React.PureComponent {
     const busesByStop = this.busesByStop();
     return (
       <div className="arrivals">
-        { Object.keys(busesByStop).map((stopId, i) => (
-          <ArrivalCard
-            key={`${stopId}-${i}`}
-            stopId={stopId}
-            busRouteIds={busesByStop[stopId]}
-          >
-          </ArrivalCard>
-        ))}
+        { this.state.stops.length > 0
+          ? Object.keys(busesByStop).map((stopId, i) => (
+              <ArrivalCard
+                key={`${stopId}-${i}`}
+                stopId={stopId}
+                busRouteIds={busesByStop[stopId]}
+              >
+              </ArrivalCard>
+            ))
+          : <p>This group does not have any buses. Click the "Admin" link, choose the group from the list, and add some buses!</p>
+        }
+
       </div>
     )
   }

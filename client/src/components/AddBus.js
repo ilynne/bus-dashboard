@@ -4,7 +4,9 @@ import StopList from './StopList';
 import GroupList from './GroupList';
 import GroupPreviewList from './GroupPreviewList';
 import BusInput from './BusInput';
+import Search from './Search';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 export default class AddBus extends React.Component {
   constructor(props) {
@@ -15,7 +17,9 @@ export default class AddBus extends React.Component {
       routesForAgency: [],
       stopsByBusRouteId: {},
       directionIndex: -1,
-      selectedGroupId: ''
+      selectedGroupId: '',
+      groups: [],
+      stopsForGroup: [],
     }
     this.handleBusNumberChange = this.handleBusNumberChange.bind(this);
     this.fetchRoutesForAgency = this.fetchRoutesForAgency.bind(this);
@@ -55,6 +59,41 @@ export default class AddBus extends React.Component {
       })
   }
 
+  getGroups = () => {
+    const token = localStorage.getItem('busDashboard::token')
+    axios.get('/groups', {
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    })
+      .then(res => {
+        this.setState({
+          groups: res.data
+        })
+      })
+  }
+
+  getStopsForGroup = () => {
+    const { selectedGroupId } = this.state;
+    if (selectedGroupId === '') {
+      this.setState((this.state, { stopsForGroup: [] }))
+      return
+    }
+    const token = localStorage.getItem('busDashboard::token');
+    const data = {
+      groupId: selectedGroupId
+    }
+    axios.get('/stops', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: data
+    })
+      .then(res => {
+        this.setState((this.state, { stopsForGroup: res.data }))
+      })
+  }
+
   setRoutesForAgency = (data) => {
     const { list } = data.data.data;
     this.setState({
@@ -84,12 +123,13 @@ export default class AddBus extends React.Component {
   }
 
   handleGroupClick(groupId) {
-    this.setState({
+    const newState = {
       selectedGroupId: groupId,
       busNumber: '',
       busRouteId: '',
       directionIndex: -1
-    });
+    }
+    this.setState((this.state, newState), () => this.getStopsForGroup());
   }
 
   handleDirectionClick(index) {
@@ -130,58 +170,107 @@ export default class AddBus extends React.Component {
     }
   }
 
+  addStop = (e) => {
+    const token = localStorage.getItem('busDashboard::token');
+    const { id } = e.target.dataset
+    const { selectedGroupId, busRouteId } = this.state;
+    const data = {
+      stopId: id,
+      groupId: selectedGroupId,
+      busId: busRouteId,
+    }
+    axios.post('/stops', data, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(() => { this.getStopsForGroup() })
+  }
+
+  removeStop = (e) => {
+    const token = localStorage.getItem('busDashboard::token');
+    const { recordId } = e.target.dataset
+    axios.delete(`/stops/${recordId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(() => { this.getStopsForGroup() })
+  }
+
   render() {
     const stopGroups = this.stopGroups();
     const stopsForDirection = this.stopsForDirection();
 
     return (
-      <div className={'admin'}>
-        <form
-          className={'add-bus-form'}
-          onSubmit={this.handleFormSubmit}
-          method={'post'}>
-            <GroupList
-              handleGroupClick={this.handleGroupClick}
-              selectedGroupId={this.state.selectedGroupId}
-            >
-            </GroupList>
+      <div className={'admin-container'}>
 
-            { this.state.selectedGroupId !== ''
-              ? <BusInput
-                  busNumber={this.state.busNumber}
-                  handleBusNumberChange={this.handleBusNumberChange}>
-                </BusInput>
-              : this.state.selectedGroupId
-            }
+        <Search
+          routesForAgency={this.state.routesForAgency}>
+        </Search>
 
-            { stopGroups
-              ? <DirectionList
-                  stopGroups={stopGroups}
-                  handleDirectionClick={this.handleDirectionClick}
-                  directionIndex={this.state.directionIndex}
-                >
-                </DirectionList>
-              : null
-            }
+        <div className={'admin'}>
+          <form
+            className={'add-bus-form'}
+            onSubmit={this.handleFormSubmit}
+            method={'post'}>
+              <GroupList
+                handleGroupClick={this.handleGroupClick}
+                selectedGroupId={this.state.selectedGroupId}
+                groups={this.props.groups}
+                getGroups={this.props.getGroups}
+              >
+              </GroupList>
 
-            { stopsForDirection
-              ? <StopList
-                  busRouteId={this.state.busRouteId}
-                  selectedGroupId={this.state.selectedGroupId}
-                  stopsForDirection={stopsForDirection}
-                >
-                </StopList>
-              : null
-            }
-        </form>
-        { this.state.selectedGroupId !== ''
-          ? <GroupPreviewList
-              selectedGroupId={this.state.selectedGroupId}
-              routesForAgency={this.state.routesForAgency}>
-            </GroupPreviewList>
-          : null
-        }
+              { this.state.selectedGroupId !== ''
+                ? <BusInput
+                    busNumber={this.state.busNumber}
+                    handleBusNumberChange={this.handleBusNumberChange}>
+                  </BusInput>
+                : this.state.selectedGroupId
+              }
+
+              { stopGroups
+                ? <DirectionList
+                    stopGroups={stopGroups}
+                    handleDirectionClick={this.handleDirectionClick}
+                    directionIndex={this.state.directionIndex}
+                  >
+                  </DirectionList>
+                : null
+              }
+
+              { stopsForDirection
+                ? <StopList
+                    busRouteId={this.state.busRouteId}
+                    selectedGroupId={this.state.selectedGroupId}
+                    stopsForGroup={this.state.stopsForGroup}
+                    stopsForDirection={stopsForDirection}
+                    addStop={this.addStop}
+                    removeStop={this.removeStop}
+                  >
+                  </StopList>
+                : null
+              }
+          </form>
+          { this.state.selectedGroupId !== ''
+            ? <GroupPreviewList
+                selectedGroupId={this.state.selectedGroupId}
+                routesForAgency={this.state.routesForAgency}
+                groups={this.props.groups}
+                stopsForGroup={this.state.stopsForGroup}
+                removeStop={this.removeStop}>
+              </GroupPreviewList>
+            : null
+          }
+        </div>
       </div>
     )
   }
+}
+
+AddBus.propTypes = {
+  selectedGroupId: PropTypes.string.isRequired,
+  groups: PropTypes.arrayOf(PropTypes.object).isRequired,
+  getGroups: PropTypes.func.isRequired,
 }

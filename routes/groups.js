@@ -5,7 +5,7 @@ const { isAuthorized, isValidId } = require("./middleware.js")
 const groupDAO = require('../daos/groups');
 
 router.post("/",
-    isAuthorized, 
+    isAuthorized,
     async (req, res, next) => {
         const { name, origin, destination, isDefault } = req.body;
         const newGroup = await groupDAO.create(req.userId, name, origin, destination, isDefault);
@@ -17,27 +17,12 @@ router.post("/",
     }
 );
 
-router.get("/", 
-    isAuthorized, 
+router.get("/",
+    isAuthorized,
     async (req, res, next) => {
-        let { origin, destination } = req.query;
-        if (origin && !destination) {
-            const groups = await groupDAO.getByOrigin(origin);
-            if (groups) {
-                res.json(groups);
-            } else {
-                res.sendStatus(404);
-            }
-        } else if (destination && !origin) {
-            const groups = await groupDAO.getByDestination(destination);
-            if (groups) {
-                res.json(groups);
-            } else {
-                res.sendStatus(404);
-            }
-        } else if (origin && destination) {
-            const searchString = `${origin} ${destination}`;
-            const groups = await groupDAO.getByOriginAndDestination(searchString);
+        let { query } = req.query;
+        if (query) {
+            const groups = await groupDAO.getByQuery(query);
             if (groups) {
                 res.json(groups);
             } else {
@@ -70,7 +55,7 @@ router.get("/:id",
 
 router.put("/:id",
     isAuthorized,
-    isValidId, 
+    isValidId,
     async (req, res, next) => {
         const groupId = req.params.id;
         const storedUserId = await groupDAO.getUserIdFromGroupId(groupId);
@@ -90,7 +75,7 @@ router.put("/:id",
 
 router.delete("/:id",
     isAuthorized,
-    isValidId, 
+    isValidId,
     async (req, res, next) => {
         const groupId = req.params.id;
         const storedUserId = await groupDAO.getUserIdFromGroupId(groupId);
@@ -103,7 +88,7 @@ router.delete("/:id",
             }
         } else {
             res.sendStatus(404);
-        }            
+        }
     }
 );
 
