@@ -1,9 +1,7 @@
 import React from 'react';
-import TabList from './TabList';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import GroupPreviewList from './GroupPreviewList';
-import SearchPreviewList from './SearchPreviewList';
 
 export default class Search extends React.Component {
   state = {
@@ -19,7 +17,6 @@ export default class Search extends React.Component {
 
   handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log('search')
     this.findGroups();
   }
 
@@ -35,7 +32,6 @@ export default class Search extends React.Component {
       params: params
     })
       .then(res => {
-        console.log(res)
         this.setState((this.state, { groups: res.data } ))
       })
   }
@@ -65,7 +61,9 @@ export default class Search extends React.Component {
         </form>
         <div className={'search-results-container'}>
           {this.state.groups.map((group) => (
-            <div className={'search-results'}>
+            <div
+              className={'search-results'}
+              key={`header-${group._id}`}>
               <p>{group.name}</p>
               { group.origin
                 ? <p>{group.origin}</p>
@@ -90,4 +88,5 @@ export default class Search extends React.Component {
 }
 
 Search.propTypes = {
+  routesForAgency: PropTypes.arrayOf(PropTypes.object).isRequired,
 }

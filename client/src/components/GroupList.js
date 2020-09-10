@@ -70,7 +70,6 @@ export default class GroupList extends React.Component {
       }
     })
       .then(res => {
-        console.log(res)
         this.props.getGroups();
       })
   }

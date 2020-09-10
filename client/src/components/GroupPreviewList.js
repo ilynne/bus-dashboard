@@ -2,7 +2,6 @@ import React from 'react';
 import _ from 'lodash';
 import GroupPreviewCard from './GroupPreviewCard';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 
 export default class GroupPreviewList extends React.PureComponent {
   groupStopsRecordId = (stopId) => {

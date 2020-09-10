@@ -66,7 +66,6 @@ export default class Home extends React.Component {
   }
 
   getGroups = () => {
-    console.log('getGroups', this.state.selectedGroupId)
     if (!this.state.isSignedIn) {
       return
     }
@@ -84,7 +83,6 @@ export default class Home extends React.Component {
   }
 
   handleGroupClick = (tabId) => {
-    console.log('handleGroupClick', tabId)
     if (tabId === 'admin') {
       this.setState({
         admin: true,

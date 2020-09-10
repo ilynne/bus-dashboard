@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 export default class StopList extends React.Component {
   stopIdsForBusDirectionGroup = () => {
-    console.log('filter', this.props.stopsForDirection, this.props.busRouteId, this.props.stopsForGroup)
     return this.props.stopsForGroup.filter(stop => { return stop.busId === this.props.busRouteId } ).map(stop => { return stop.stopId})
   }
 
