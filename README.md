@@ -39,6 +39,12 @@ Groups will be displayed under the header. Click on a group to display its relat
 
 Use the admin page to delete individual stops or whole groups. You can also add additional buses or stops to existing groups.
 
+### Search
+
+![Search](wireframes/Search.png)
+
+Type a search word and click "Search" to get a list of groups that match your query on name, origin, or destination. This can help you choose buses for your routes.
+
 ## Test this API (postman)
 
 ### Create an account
@@ -110,7 +116,7 @@ You will receive a `Bus` object.
 
 - `GET` https://whispering-caverns-88263.herokuapp.com/oba/routes/1. You will get data for all the routes for King County Metro.
 - `GET` https://whispering-caverns-88263.herokuapp.com/oba/routes/1_100252/stops. You will get stops for the route id. The sample is the 62.
-- `GET` https://whispering-caverns-88263.herokuapp.com/oba/stops/1_420/arrivals. You will get stops for the route id. The sample is the SE 3rd and Virginia.
+- `GET` https://whispering-caverns-88263.herokuapp.com/oba/stops/1_420/arrivals. You will get stops for the route id. The sample is SE 3rd and Virginia.
 
 ### Authentication:
 
@@ -124,7 +130,7 @@ You will receive a `Bus` object.
 Groups:
 
 - [x] POST `/groups`
-- [x] GET `/groups` -- should allow `origin` and/or `destination` query params. If those params are sent, the endpoint should return all matching groups, ranked, not just the current user's matches. This would allow people to find groups that others had created and copy them to their own accounts. We should not identify the user that created the group.
+- [x] GET `/groups` -- allows a `query` parameter to search groups by name, origin, and destination. The search returns all groups that match the text search, with stops included.
 - [x] GET `/groups/:id`
 - [x] PUT `/groups/:id`
 - [x] DELETE `/groups/:id`
@@ -181,6 +187,7 @@ Stop:
 
 - [x] groupId
 - [x] stopId -- OneBusAway id, which should be unique to the group
+- [x] busId -- OneBusAway id.
 
 Bus:
 
