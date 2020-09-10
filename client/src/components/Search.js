@@ -42,7 +42,7 @@ export default class Search extends React.Component {
 
   render() {
     return (
-      <div className={"search"}>
+      <div className={"search-container"}>
         <form
           className={'search-form'}
           onSubmit={this.handleFormSubmit}
@@ -63,25 +63,27 @@ export default class Search extends React.Component {
             >
           </input>
         </form>
-        {this.state.groups.map((group) => (
-          <div>
-            <p>{group.name}</p>
-            { group.origin
-              ? <p>{group.origin}</p>
-              : null
-            }
-            { group.destination
-              ? <p>{group.destination}</p>
-              : null
-            }
-            <GroupPreviewList
-              key={group._id}
-              routesForAgency={this.props.routesForAgency}
-              stopsForGroup={group.stops}
-              >
-            </GroupPreviewList>
-          </div>
-        ))}
+        <div className={'search-results-container'}>
+          {this.state.groups.map((group) => (
+            <div className={'search-results'}>
+              <p>{group.name}</p>
+              { group.origin
+                ? <p>{group.origin}</p>
+                : null
+              }
+              { group.destination
+                ? <p>{group.destination}</p>
+                : null
+              }
+              <GroupPreviewList
+                key={group._id}
+                routesForAgency={this.props.routesForAgency}
+                stopsForGroup={group.stops}
+                >
+              </GroupPreviewList>
+            </div>
+          ))}
+        </div>
       </div>
     )
   }

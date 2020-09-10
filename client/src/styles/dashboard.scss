@@ -113,18 +113,18 @@ table.arrivals {
   }
 }
 
-.admin {
+.admin, .search-container {
   display: grid;
   grid-template-columns: 1fr 2fr;
   grid-template-areas:
     "form group-preview";
 }
 
-.add-bus-form {
+.add-bus-form, .search-form {
   grid-area: form;
   margin: 6px 3px 0 3px;
   >div ul {
-    // margin: 0;
+    margin: 0;
   }
   >div p {
     margin-bottom: 0;
@@ -135,7 +135,7 @@ table.arrivals {
   }
 }
 
-.group-preview {
+.group-preview, .search-results-container {
   grid-area: group-preview;
 }
 
@@ -150,6 +150,20 @@ table.arrivals {
   }
   >p {
     padding-top: 0;
+  }
+}
+
+.search-results {
+  margin-bottom: 1em;
+  >p {
+    display: inline;
+    padding-right: 1em;
+    padding-top: 0.5em;
+    &:first-of-type {
+      font-size: larger;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
   }
 }
 
